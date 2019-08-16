@@ -29,7 +29,7 @@ mesecons_debug.register_action_on_toggle = function(def)
 
   minetest.register_chatcommand("mesecons_debug_disable_" .. def.suffix, {
     description = "disables the mesecon action_on() function for " .. def.node,
-    privs = {server=true},
+    privs = {mesecons_debug=true},
     func = function()
       enabled = false
       return true, "Disabled action_on() for " .. def.node
@@ -38,7 +38,7 @@ mesecons_debug.register_action_on_toggle = function(def)
 
   minetest.register_chatcommand("mesecons_debug_enable_" .. def.suffix, {
     description = "enables the mesecon action_on() function for " .. def.node,
-    privs = {server=true},
+    privs = {mesecons_debug=true},
     func = function()
       enabled = true
       return true, "Enabled action_on() for " .. def.node

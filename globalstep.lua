@@ -45,7 +45,7 @@ end
 
 minetest.register_chatcommand("mesecons_enable", {
   description = "enables the mesecons globlastep",
-  privs = {server=true},
+  privs = {mesecons_debug=true},
   func = function()
     enabled = true
     return true, "mesecons enabled"
@@ -54,7 +54,7 @@ minetest.register_chatcommand("mesecons_enable", {
 
 minetest.register_chatcommand("mesecons_disable", {
   description = "disables the mesecons globlastep",
-  privs = {server=true},
+  privs = {mesecons_debug=true},
   func = function()
     enabled = false
     -- flush actions, while we are on it
