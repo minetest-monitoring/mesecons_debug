@@ -92,10 +92,10 @@ mesecon.queue.execute = function(self, action)
             minetest.pos_to_string(action.pos)
         )
       end
-
-      minetest.log("warning", "[mesecons_debug] disabled mapblock at " ..
-        minetest.pos_to_string(action.pos))
     end
+    
+    minetest.log("warning", "[mesecons_debug] disabled mapblock at " ..
+        minetest.pos_to_string(action.pos))
   end
 
   -- update time usage
