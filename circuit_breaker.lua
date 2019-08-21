@@ -57,19 +57,15 @@ mesecon.queue.execute = function(self, action)
   local t0 = minetest.get_us_time()
 
   local dark_timer = dark_mapblocks[hash]
-  if dark_timer then
-    if dark_timer < t0 then
-      -- enable mapblock again
-      dark_mapblocks[hash] = nil
-    else
-      -- dark mapblock
-      return
-    end
+  if dark_timer and dark_timer < t0 then
+    -- timeout expired, disable mapblock throttling
+    dark_mapblocks[hash] = nil
+    dark_timer = nil
   end
 
   local time_usage = per_block_time_usage[hash] or 0
 
-	old_execute(self, action)
+  old_execute(self, action)
   local t1 = minetest.get_us_time()
   local diff = t1 -t0
   time_usage = time_usage + diff
@@ -79,22 +75,10 @@ mesecon.queue.execute = function(self, action)
     max_per_block_time_usage[hash] = time_usage
   end
 
-  if time_usage > max_time_setting then
-    -- turn off mapblock
+  if time_usage > max_time_setting and not dark_timer then
+    -- time usage exceeded, throttle mapblock
     dark_mapblocks[hash] = t1 + dark_time
-    -- message to player in range
-    for _, player in ipairs(minetest.get_connected_players()) do
-      local ppos = player:get_pos()
-      if vector.distance(ppos, action.pos) < 32 then
-        minetest.chat_send_player(
-          player:get_player_name(),
-          "[mesecons] the mapblock near you got disabled due to excessive cpu usage at " ..
-            minetest.pos_to_string(action.pos)
-        )
-      end
-    end
-    
-    minetest.log("warning", "[mesecons_debug] disabled mapblock at " ..
+    minetest.log("warning", "[mesecons_debug] throttled mapblock at " ..
         minetest.pos_to_string(action.pos))
   end
 
@@ -104,6 +88,16 @@ end
 
 local old_add_action = mesecon.queue.add_action
 mesecon.queue.add_action = function(self, pos, func, params, time, overwritecheck, priority)
+	time = time or 0
+	local blockpos = get_blockpos(pos)
+	local hash = minetest.hash_node_position(blockpos)
+
+	local dark_timer = dark_mapblocks[hash]
+	if dark_timer then
+		-- throttle add actions
+		time = time + 1
+	end
+
 	old_add_action(self, pos, func, params, time, overwritecheck, priority)
 end
 
@@ -126,7 +120,7 @@ minetest.register_chatcommand("mesecons_debug_circuit_breaker_stats", {
       "(sampled over " .. sample_interval .. " seconds)"
 
     if dark_timer and dark_timer > t0 then
-      msg = msg .. " [Mapblock disabled!]"
+      msg = msg .. " [Mapblock throttled!]"
     end
 
     return true, msg
