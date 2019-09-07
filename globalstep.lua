@@ -13,9 +13,21 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
   local modname = info.mod
 
   if modname == "mesecons" then
+    local cooldown = 0
     local fn = function(dtime)
+      if cooldown > 0 then
+	      cooldown = cooldown - 1
+	      return
+      end
+
       if enabled then
+	local t0 = minetest.get_us_time()
         globalstep(dtime)
+	local t1 = minetest.get_us_time()
+	local diff = t1 - t0
+	if diff > 75000 then
+		cooldown = 5
+	end
       end
     end
 
