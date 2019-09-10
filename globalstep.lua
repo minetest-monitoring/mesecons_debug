@@ -26,7 +26,7 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
 	local t1 = minetest.get_us_time()
 	local diff = t1 - t0
 	if diff > 75000 then
-		cooldown = 7
+		cooldown = 5
 		minetest.log("warning", "[mesecons_debug] cooldown triggered")
 	end
       end
