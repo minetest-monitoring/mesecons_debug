@@ -21,9 +21,9 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
       end
 
       if enabled then
-        local max_globalstep_time = tonumber(minetest.settings:get("mesecons_debug_max_globalstep_time", "75000"))
-        local cooldown_steps = tonumber(minetest.settings:get("mesecons_debug_cooldown_steps", "5"))
-        local autoflush = tonumber(minetest.settings:get_bool("mesecons_debug_autoflush", false))
+        local max_globalstep_time = tonumber(minetest.settings:get("mesecons_debug_max_globalstep_time")) or 75000
+        local cooldown_steps = tonumber(minetest.settings:get("mesecons_debug_cooldown_steps")) or 5
+        local autoflush = minetest.settings:get_bool("mesecons_debug_autoflush", false)
 
         local t0 = minetest.get_us_time()
         globalstep(dtime)
