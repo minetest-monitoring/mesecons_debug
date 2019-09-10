@@ -2,8 +2,9 @@
 
 ## Settings
 
-* `mesecons_debug.circuit_breaker` Max time usage per mapblock in micros per 10 seconds.
-* `mesecons_debug.dark_timer` Dark time in microseconds: how long the mapblock stays inactive.
+* `mesecons_debug_max_globalstep_time`
+* `mesecons_debug_cooldown_steps`
+* `mesecons_debug_autoflush`
 
 ## Commands
 

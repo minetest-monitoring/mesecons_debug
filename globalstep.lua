@@ -16,19 +16,26 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
     local cooldown = 0
     local fn = function(dtime)
       if cooldown > 0 then
-	      cooldown = cooldown - 1
-	      return
+        cooldown = cooldown - 1
+        return
       end
 
       if enabled then
-	local t0 = minetest.get_us_time()
+        local max_globalstep_time = tonumber(minetest.settings:get("mesecons_debug_max_globalstep_time", "75000"))
+        local cooldown_steps = tonumber(minetest.settings:get("mesecons_debug_cooldown_steps", "5"))
+        local autoflush = tonumber(minetest.settings:get_bool("mesecons_debug_autoflush", false))
+
+        local t0 = minetest.get_us_time()
         globalstep(dtime)
-	local t1 = minetest.get_us_time()
-	local diff = t1 - t0
-	if diff > 75000 then
-		cooldown = 5
-		minetest.log("warning", "[mesecons_debug] cooldown triggered")
-	end
+        local t1 = minetest.get_us_time()
+        local diff = t1 - t0
+        if diff > max_globalstep_time then
+          cooldown = cooldown_steps
+          minetest.log("warning", "[mesecons_debug] cooldown triggered")
+          if autoflush then
+            mesecon.queue.actions = {}
+          end
+        end
       end
     end
 
