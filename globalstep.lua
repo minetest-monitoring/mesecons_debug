@@ -2,7 +2,7 @@
 -- enable/disable mesecons entirely
 
 local enabled = true
-local dump = false
+local dump = 0
 
 -- globalstep on/off
 for i, globalstep in ipairs(minetest.registered_globalsteps) do
@@ -26,9 +26,9 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
         local cooldown_steps = tonumber(minetest.settings:get("mesecons_debug_cooldown_steps")) or 5
         local autoflush = minetest.settings:get_bool("mesecons_debug_autoflush", false)
 
-	if dump then
+	if dump > 0 then
 		mesecons_debug.dump_queue()
-		dump = false
+		dump = dump - 1
 	end
 
         local t0 = minetest.get_us_time()
@@ -72,7 +72,7 @@ minetest.register_chatcommand("dump_queue", {
     description = "dumps the current actionqueue to a file for later processing",
     privs = { mesecons_debug = true },
     func = function()
-	dump = true
+	dump = 10
 	return true, "processing.."
     end
 })
