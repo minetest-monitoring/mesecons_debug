@@ -3,6 +3,7 @@
 
 local enabled = true
 local dump = 0
+local step_index = 0
 
 -- globalstep on/off
 for i, globalstep in ipairs(minetest.registered_globalsteps) do
@@ -14,7 +15,15 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
   local modname = info.mod
 
   if modname == "mesecons" then
+    step_index = step_index + 1
+    if step_index > 1 then
+	 -- only override first globalstep in mesecons
+	 return
+    end
+
     local cooldown = 0
+    local last_run_time = 0
+
     local fn = function(dtime)
       if cooldown > 0 then
         cooldown = cooldown - 1
@@ -22,19 +31,32 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
       end
 
       if enabled then
+
         local max_globalstep_time = tonumber(minetest.settings:get("mesecons_debug_max_globalstep_time")) or 75000
+	local min_delay_time = tonumber(minetest.settings:get("mesecons_debug_min_delay_time")) or 200000
         local cooldown_steps = tonumber(minetest.settings:get("mesecons_debug_cooldown_steps")) or 5
         local autoflush = minetest.settings:get_bool("mesecons_debug_autoflush", false)
 
+	local now = minetest.get_us_time()
+	if (now - last_run_time) < min_delay_time then
+		-- adhere to min delay
+		return
+	end
+
+	last_run_time = now
+
 	if dump > 0 then
+		-- dump action queue
 		mesecons_debug.dump_queue()
 		dump = dump - 1
 	end
 
+	-- execute with time measurement
         local t0 = minetest.get_us_time()
         globalstep(dtime)
         local t1 = minetest.get_us_time()
         local diff = t1 - t0
+
         if diff > max_globalstep_time then
           cooldown = cooldown_steps
           minetest.log("warning", "[mesecons_debug] cooldown triggered")
