@@ -2,7 +2,8 @@
 -- enable/disable mesecons entirely
 
 local enabled = true
-local dump = 0
+local queue_dump_counter = 0
+
 local step_index = 0
 
 -- globalstep on/off
@@ -18,7 +19,7 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
     step_index = step_index + 1
     if step_index > 1 then
 	 -- only override first globalstep in mesecons
-	 return
+	break
     end
 
     local cooldown = 0
@@ -45,10 +46,10 @@ for i, globalstep in ipairs(minetest.registered_globalsteps) do
 
 	last_run_time = now
 
-	if dump > 0 then
+	if queue_dump_counter > 0 then
 		-- dump action queue
 		mesecons_debug.dump_queue()
-		dump = dump - 1
+		queue_dump_counter = queue_dump_counter - 1
 	end
 
 	-- execute with time measurement
@@ -94,7 +95,7 @@ minetest.register_chatcommand("dump_queue", {
     description = "dumps the current actionqueue to a file for later processing",
     privs = { mesecons_debug = true },
     func = function()
-	dump = 10
+	queue_dump_counter = 10
 	return true, "processing.."
     end
 })
