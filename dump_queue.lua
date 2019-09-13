@@ -1,8 +1,6 @@
 
-minetest.register_chatcommand("dump_queue", {
-    description = "dumps the current actionqueue to a file for later processing",
-    privs = { server = true },
-    func = function()
+
+mesecons_debug.dump_queue = function()
 	minetest.log("warning", "[dump_queue] dumping mesecons action-queue")
 
 	local fname = minetest.get_worldpath().."/mesecons_dump_" .. os.date("%Y%m%dT%H%M%S") .. ".json"
@@ -15,8 +13,8 @@ minetest.register_chatcommand("dump_queue", {
 	f:write(data_string)
 	io.close(f)
 
-	return true, "dumped " .. #mesecon.queue.actions ..
+	minetest.log("action", "[dump_queue] dumped " .. #mesecon.queue.actions ..
 		" actions to " .. fname ..
 		" bytes: " .. string.len(data_string)
-    end
-})
+	)
+end
