@@ -2,7 +2,7 @@ local MP = minetest.get_modpath("mesecons_debug")
 
 mesecons_debug = {}
 
-dofile(MP.."/add_action.lua")
+----  dofile(MP.."/add_action.lua")
 dofile(MP.."/privs.lua")
 dofile(MP.."/api_action_on.lua")
 dofile(MP.."/api_nodetimer.lua")
