@@ -57,6 +57,7 @@ minetest.register_globalstep(function(dtime)
     if reenable_seconds < 1 then
       -- re-enable again
       enabled = true
+      mesecon.queue.actions = {}
     end
   end
 
@@ -75,6 +76,8 @@ minetest.register_chatcommand("mesecons_enable", {
   description = "enables the mesecons globlastep",
   privs = {mesecons_debug=true},
   func = function()
+    -- flush actions, while we are on it
+    mesecon.queue.actions = {}
     enabled = true
     return true, "mesecons enabled"
   end
@@ -85,8 +88,6 @@ minetest.register_chatcommand("mesecons_disable", {
   privs = {mesecons_debug=true},
   func = function()
     enabled = false
-    -- flush actions, while we are on it
-    mesecon.queue.actions = {}
     return true, "mesecons disabled"
   end
 })
