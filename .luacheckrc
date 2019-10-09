@@ -1,6 +1,6 @@
-allow_defined_top = true
 
 globals = {
+	"mesecons_debug",
 	"mesecon",
 	"minetest"
 }
