@@ -55,7 +55,7 @@ minetest.register_globalstep(function(dtime)
     ctx.avg_micros = math.floor((ctx.avg_micros * 0.9) + (ctx.micros * 0.1))
     ctx.micros = 0
     if ctx.avg_micros > mesecons_debug.max_usage_micros then
-      ctx.penalty = math.min(ctx.penalty + 0.1, 10)
+      ctx.penalty = math.min(ctx.penalty + 0.1, 20)
     elseif ctx.penalty > 0 then
       ctx.penalty = math.max(ctx.penalty - 0.01, 0)
     end
