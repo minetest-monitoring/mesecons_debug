@@ -1,10 +1,18 @@
 local MP = minetest.get_modpath("mesecons_debug")
 
-mesecons_debug = {}
+mesecons_debug = {
+  enabled = true,
+  context_store_size = 0,
+  -- playername => true
+  hud = {},
 
-----  dofile(MP.."/add_action.lua")
+  max_usage_micros = 20000
+}
+
 dofile(MP.."/privs.lua")
 dofile(MP.."/flush.lua")
 dofile(MP.."/overrides.lua")
+dofile(MP.."/chatcommands.lua")
+dofile(MP.."/hud.lua")
 
 print("[OK] mesecons_debug loaded")

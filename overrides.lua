@@ -1,21 +1,46 @@
 
--- enable/disable mesecons entirely
+local function get_blockpos(pos)
+	return {x = math.floor(pos.x / 16),
+	        y = math.floor(pos.y / 16),
+	        z = math.floor(pos.z / 16)}
+end
 
-local enabled = true
-local reenable_seconds = 0
+-- blockpos-hash => context
+local context_store = {}
 
-local cumulative_microseconds = 0
-local hit_count = 0
+mesecons_debug.get_context = function(pos)
+  local blockpos = get_blockpos(pos)
+  local hash = minetest.hash_node_position(blockpos)
+
+  local ctx = context_store[hash]
+  if not ctx then
+    ctx = {
+      -- usage in us
+      micros = 0,
+      -- average micros per second
+      avg_micros = 0,
+      -- time penalty
+      penalty = 0
+    }
+    context_store[hash] = ctx
+  end
+
+  return ctx
+end
 
 -- execute()
 local old_execute = mesecon.queue.execute
-mesecon.queue.execute = function(...)
-  if enabled then
+mesecon.queue.execute = function(self, action)
+  if mesecons_debug.enabled then
     local t0 = minetest.get_us_time()
-    old_execute(...)
+    old_execute(self, action)
     local t1 = minetest.get_us_time()
     local micros = t1 - t0
-    cumulative_microseconds = cumulative_microseconds + micros
+
+    local ctx = mesecons_debug.get_context(action.pos)
+    ctx.micros = ctx.micros + micros
+
+    --print("execute() func=" .. action.func .. " pos=" .. minetest.pos_to_string(action.pos) .. " micros=" .. micros)
   end
 end
 
@@ -25,69 +50,30 @@ minetest.register_globalstep(function(dtime)
   timer = timer + dtime
   if timer < 1 then return end
   timer=0
-
-  local max_micros = tonumber(minetest.settings:get("mesecons_debug.max_micros")) or 100000
-  local max_hit_count = tonumber(minetest.settings:get("mesecons_debug.max_hit_count")) or 5
-
-  if cumulative_microseconds > max_micros then
-    -- heat up
-    hit_count = hit_count + 1
-  else
-    -- cooldown
-    max_hit_count = max_hit_count - 0.1
-  end
-
-  cumulative_microseconds = 0
-
-
-  if hit_count > max_hit_count then
-    hit_count = 0
-    enabled = false
-
-    minetest.chat_send_all("[circuit-breaker] mesecons are disabled for a minute due to abuse, " ..
-      "please fix/optimize your circuits!")
-
-    minetest.log("warning", "[mesecons_debug] circuit-breaker triggered -> disabled for 60 seconds")
-
-    reenable_seconds = 60
-  end
-
-  if reenable_seconds > 0 then
-    reenable_seconds = reenable_seconds - 1
-    if reenable_seconds < 1 then
-      -- re-enable again
-      enabled = true
-      mesecon.queue.actions = {}
+  mesecons_debug.context_store_size = 0
+  for _, ctx in pairs(context_store) do
+    ctx.avg_micros = math.floor((ctx.avg_micros * 0.9) + (ctx.micros * 0.1))
+    ctx.micros = 0
+    if ctx.avg_micros > mesecons_debug.max_usage_micros then
+      ctx.penalty = math.min(ctx.penalty + 0.1, 10)
+    elseif ctx.penalty > 0 then
+      ctx.penalty = math.max(ctx.penalty - 0.01, 0)
     end
+    mesecons_debug.context_store_size = mesecons_debug.context_store_size + 1
   end
 
 end)
 
 -- add_action()
 local old_add_action = mesecon.queue.add_action
-mesecon.queue.add_action = function(...)
-  if enabled then
-    old_add_action(...)
+mesecon.queue.add_action = function(self, pos, func, params, time, overwritecheck, priority)
+  if mesecons_debug.enabled then
+    local ctx = mesecons_debug.get_context(pos)
+
+    time = time or 0
+    time = time + ctx.penalty
+
+    old_add_action(self, pos, func, params, time, overwritecheck, priority)
+    --print("add_action() pos=" .. minetest.pos_to_string(pos))
   end
 end
-
-
-minetest.register_chatcommand("mesecons_enable", {
-  description = "enables the mesecons globlastep",
-  privs = {mesecons_debug=true},
-  func = function()
-    -- flush actions, while we are on it
-    mesecon.queue.actions = {}
-    enabled = true
-    return true, "mesecons enabled"
-  end
-})
-
-minetest.register_chatcommand("mesecons_disable", {
-  description = "disables the mesecons globlastep",
-  privs = {mesecons_debug=true},
-  func = function()
-    enabled = false
-    return true, "mesecons disabled"
-  end
-})
