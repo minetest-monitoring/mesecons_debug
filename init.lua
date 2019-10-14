@@ -12,6 +12,7 @@ mesecons_debug = {
 dofile(MP.."/privs.lua")
 dofile(MP.."/flush.lua")
 dofile(MP.."/overrides.lua")
+dofile(MP.."/luacontroller.lua")
 dofile(MP.."/chatcommands.lua")
 dofile(MP.."/hud.lua")
 
