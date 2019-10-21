@@ -1,6 +1,6 @@
-allow_defined_top = true
 
 globals = {
+	"mesecons_debug",
 	"mesecon",
 	"minetest"
 }
@@ -12,5 +12,7 @@ read_globals = {
 
 	-- Minetest
 	"vector", "ItemStack",
-	"dump"
+	"dump",
+
+	"monitoring"
 }
