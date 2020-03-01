@@ -6,7 +6,7 @@ mesecons_debug = {
   -- playername => true
   hud = {},
 
-  max_usage_micros = 25000
+  max_usage_micros = 15000
 }
 
 dofile(MP.."/privs.lua")
