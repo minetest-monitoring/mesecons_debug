@@ -27,20 +27,22 @@ minetest.register_on_leaveplayer(function(player)
 end)
 
 
-local function get_blockpos(pos)
-	return {x = math.floor(pos.x / 16),
-	        y = math.floor(pos.y / 16),
-	        z = math.floor(pos.z / 16)}
-end
 
 local function get_info(player)
   local pos = player:get_pos()
-  local blockpos = get_blockpos(pos)
+  local blockpos = mesecons_debug.get_blockpos(pos)
   local ctx = mesecons_debug.get_context(pos)
 
   local percent = math.floor(ctx.avg_micros / mesecons_debug.max_usage_micros * 100)
 
-  local txt = "Mesecons @ (" .. blockpos.x .. "/" .. blockpos.y .. "/" .. blockpos.z .. ") " ..
+  local txt = "Mesecons @ (" .. blockpos.x .. "/" .. blockpos.y .. "/" .. blockpos.z .. ") "
+
+  if ctx.whitlisted then
+    txt  = txt .. "whitelisted, no limits"
+    return txt, 0x00FF00
+  end
+
+  txt = txt ..
     " usage: " .. ctx.avg_micros .. " us/s .. (" .. percent .. "%) " ..
     "penalty: " .. math.floor(ctx.penalty*10)/10 .. " s"
 

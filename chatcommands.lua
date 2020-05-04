@@ -50,15 +50,37 @@ minetest.register_chatcommand("mesecons_disable", {
 minetest.register_chatcommand("mesecons_whitelist_add", {
   description = "adds the current mapblock to the whitelist",
   privs = {mesecons_debug=true},
-  func = function()
-    return true, "mesecons disabled"
+  func = function(name)
+    local player = minetest.get_player_by_name(name)
+    if not player then
+      return
+    end
+
+    local ppos = player:get_pos()
+    local blockpos = mesecons_debug.get_blockpos(ppos)
+    local hash = minetest.hash_node_position(blockpos)
+
+    mesecons_debug[hash] = true
+
+    return true, "mapblock whitlisted"
   end
 })
 
 minetest.register_chatcommand("mesecons_whitelist_remove", {
   description = "removes the current mapblock from the whitelist",
   privs = {mesecons_debug=true},
-  func = function()
-    return true, "mesecons disabled"
+  func = function(name)
+    local player = minetest.get_player_by_name(name)
+    if not player then
+      return
+    end
+
+    local ppos = player:get_pos()
+    local blockpos = mesecons_debug.get_blockpos(ppos)
+    local hash = minetest.hash_node_position(blockpos)
+
+    mesecons_debug[hash] = true
+
+    return true, "mapblock removed from whitelist"
   end
 })

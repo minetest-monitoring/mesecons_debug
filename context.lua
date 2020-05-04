@@ -7,17 +7,12 @@ if has_monitoring then
 	penalized_mapblock_count = monitoring.gauge("mesecons_debug_penalized_mapblock_count", "count of penalized mapblocks")
 end
 
-local function get_blockpos(pos)
-	return {x = math.floor(pos.x / 16),
-	        y = math.floor(pos.y / 16),
-	        z = math.floor(pos.z / 16)}
-end
 
 -- blockpos-hash => context
 local context_store = {}
 
 mesecons_debug.get_context = function(pos)
-  local blockpos = get_blockpos(pos)
+  local blockpos = mesecons_debug.get_blockpos(pos)
   local hash = minetest.hash_node_position(blockpos)
 
   local ctx = context_store[hash]
@@ -36,6 +31,11 @@ mesecons_debug.get_context = function(pos)
     }
     context_store[hash] = ctx
   end
+
+	-- update context
+
+	-- whitelist flag
+	ctx.whitelisted = mesecons_debug.whitelist[hash]
 
   return ctx
 end
