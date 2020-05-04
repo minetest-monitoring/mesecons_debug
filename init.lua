@@ -14,6 +14,7 @@ mesecons_debug = {
 }
 
 dofile(MP.."/functions.lua")
+dofile(MP.."/whitelist.lua")
 dofile(MP.."/privs.lua")
 dofile(MP.."/flush.lua")
 dofile(MP.."/context.lua")
@@ -21,5 +22,7 @@ dofile(MP.."/overrides.lua")
 dofile(MP.."/luacontroller.lua")
 dofile(MP.."/chatcommands.lua")
 dofile(MP.."/hud.lua")
+
+mesecons_debug.load_whitelist()
 
 print("[OK] mesecons_debug loaded")

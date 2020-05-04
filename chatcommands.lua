@@ -60,7 +60,8 @@ minetest.register_chatcommand("mesecons_whitelist_add", {
     local blockpos = mesecons_debug.get_blockpos(ppos)
     local hash = minetest.hash_node_position(blockpos)
 
-    mesecons_debug[hash] = true
+    mesecons_debug.whitelist[hash] = true
+    mesecons_debug.save_whitelist()
 
     return true, "mapblock whitlisted"
   end
@@ -79,7 +80,8 @@ minetest.register_chatcommand("mesecons_whitelist_remove", {
     local blockpos = mesecons_debug.get_blockpos(ppos)
     local hash = minetest.hash_node_position(blockpos)
 
-    mesecons_debug[hash] = true
+    mesecons_debug.whitelist[hash] = true
+    mesecons_debug.save_whitelist()
 
     return true, "mapblock removed from whitelist"
   end
