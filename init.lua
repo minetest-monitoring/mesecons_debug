@@ -3,6 +3,7 @@ local MP = minetest.get_modpath("mesecons_debug")
 mesecons_debug = {
   enabled = true,
   context_store_size = 0,
+
   -- playername => true
   hud = {},
 
@@ -11,6 +12,7 @@ mesecons_debug = {
 
 dofile(MP.."/privs.lua")
 dofile(MP.."/flush.lua")
+dofile(MP.."/context.lua")
 dofile(MP.."/overrides.lua")
 dofile(MP.."/luacontroller.lua")
 dofile(MP.."/chatcommands.lua")

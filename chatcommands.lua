@@ -46,3 +46,19 @@ minetest.register_chatcommand("mesecons_disable", {
     return true, "mesecons disabled"
   end
 })
+
+minetest.register_chatcommand("mesecons_whitelist_add", {
+  description = "adds the current mapblock to the whitelist",
+  privs = {mesecons_debug=true},
+  func = function()
+    return true, "mesecons disabled"
+  end
+})
+
+minetest.register_chatcommand("mesecons_whitelist_remove", {
+  description = "removes the current mapblock from the whitelist",
+  privs = {mesecons_debug=true},
+  func = function()
+    return true, "mesecons disabled"
+  end
+})

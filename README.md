@@ -1,51 +1,26 @@
 # Mesecons Debug Collection
 
+Allows to throttle mesecons activity per mapblock
+
+# Overview
+
+There is a cpu quota for every mapblock, if that quota is used up
+the mesecons contraptions will be slowed down for that mapblock
+
+The current mapblock-stats can be viewed with `/mesecons_hud on`
+
 ## Settings
 
-* `mesecons_debug_max_globalstep_time`
-* `mesecons_debug_cooldown_steps`
-* `mesecons_debug_autoflush`
+* none yet
 
 ## Commands
 
 All of these commands require the `mesecons_debug` privilege.
 
-* `/mesecons_flush`.
-* `/mesecons_enable`.
-* `/mesecons_disable`.
-
-## Various nodes action_on() effector
-
-* `mesecons_debug_enable_pipeworks_filter`.
-* `mesecons_debug_disable_pipeworks_filter`.
-
-* `mesecons_debug_enable_pipeworks_mese_filter`.
-* `mesecons_debug_disable_pipeworks_mese_filter`.
-
-* `mesecons_debug_enable_pipeworks_dispenser`.
-* `mesecons_debug_disable_pipeworks_dispenser`.
-
-* `mesecons_debug_enable_pipeworks_deployer`.
-* `mesecons_debug_disable_pipeworks_deployer`.
-
-* `mesecons_debug_enable_pipeworks_nodebreaker`.
-* `mesecons_debug_disable_pipeworks_nodebreaker`.
-
-* `mesecons_debug_enable_constructor_mk1`.
-* `mesecons_debug_disable_constructor_mk1`.
-
-* `mesecons_debug_enable_constructor_mk2`.
-* `mesecons_debug_disable_constructor_mk2`.
-
-* `mesecons_debug_enable_constructor_mk3`.
-* `mesecons_debug_disable_constructor_mk3`.
-
-## Various nodes on_timer() call
-
-* `mesecons_debug_enable_blinky_plant`.
-* `mesecons_debug_disable_blinky_plant`.
-
-## Circuit breaker commands
-
-* `mesecons_debug_circuit_breaker_stats` (no priv needed).
-* `mesecons_debug_circuit_breaker_stats_reset`.
+* `/mesecons_hud [on|off]` enables or disables the hud
+* `/mesecons_flush` Flushes the action queue
+* `/mesecons_enable` Enable the mesecons queue
+* `/mesecons_disable` Disables the mesecons queue
+* `/mesecons_stats` shows some mesecons stats for the current position
+* `/mesecons_whitelist_add` adds the current mapblock to the whitelist
+* `/mesecons_whitelist_remove` removes the current mapblock from the whitelist
