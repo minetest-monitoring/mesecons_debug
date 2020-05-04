@@ -13,6 +13,10 @@ The current mapblock-stats can be viewed with `/mesecons_hud on`
 
 * none yet
 
+## Privs
+
+* **mesecons_debug** Allows execution of mesecon debug chatcommands
+
 ## Commands
 
 All of these commands require the `mesecons_debug` privilege.
