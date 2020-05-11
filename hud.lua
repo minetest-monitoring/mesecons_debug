@@ -37,7 +37,7 @@ local function get_info(player)
 
   local txt = "Mesecons @ (" .. blockpos.x .. "/" .. blockpos.y .. "/" .. blockpos.z .. ") "
 
-  if ctx.whitlisted then
+  if ctx.whitelisted then
     txt  = txt .. "whitelisted, no limits"
     return txt, 0x00FF00
   end
