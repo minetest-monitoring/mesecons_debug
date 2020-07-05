@@ -77,7 +77,9 @@ minetest.register_globalstep(function(dtime)
 		end
   end
 
-	mapblock_count.set(mesecons_debug.context_store_size)
-	penalized_mapblock_count.set(penalized_count)
+	if has_monitoring then
+		mapblock_count.set(mesecons_debug.context_store_size)
+		penalized_mapblock_count.set(penalized_count)
+	end
 
 end)
