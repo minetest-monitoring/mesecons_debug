@@ -47,6 +47,22 @@ minetest.register_chatcommand("mesecons_disable", {
   end
 })
 
+minetest.register_chatcommand("mesecons_whitelist_get", {
+  description = "shows the current mapblock whitelist",
+  privs = {mesecons_debug=true},
+  func = function(name)
+    local whitelist = "mesecons whitelist:\n"
+    local count = 0
+    for hash, _ in pairs(mesecons_debug.whitelist) do
+      whitelist = whitelist .. minetest.pos_to_string(minetest.get_position_from_hash(hash)) .. "\n"
+      count = count + 1
+    end
+    whitelist = whitelist .. string.format("%d mapblocks whitelisted", count)
+
+    return true, whitelist
+  end
+})
+
 minetest.register_chatcommand("mesecons_whitelist_add", {
   description = "adds the current mapblock to the whitelist",
   privs = {mesecons_debug=true},

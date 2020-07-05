@@ -26,5 +26,6 @@ All of these commands require the `mesecons_debug` privilege.
 * `/mesecons_enable` Enable the mesecons queue
 * `/mesecons_disable` Disables the mesecons queue
 * `/mesecons_stats` shows some mesecons stats for the current position
+* `/mesecons_whitelist_get` shows the list of whitelisted mapblocks
 * `/mesecons_whitelist_add` adds the current mapblock to the whitelist
 * `/mesecons_whitelist_remove` removes the current mapblock from the whitelist
