@@ -50,7 +50,7 @@ minetest.register_chatcommand("mesecons_disable", {
 minetest.register_chatcommand("mesecons_whitelist_get", {
   description = "shows the current mapblock whitelist",
   privs = {mesecons_debug=true},
-  func = function(name)
+  func = function()
     local whitelist = "mesecons whitelist:\n"
     local count = 0
     for hash, _ in pairs(mesecons_debug.whitelist) do
