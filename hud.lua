@@ -43,8 +43,8 @@ local function get_info(player)
   end
 
   txt = txt ..
-    " usage: " .. ctx.avg_micros .. " us/s .. (" .. percent .. "%) " ..
-    "penalty: " .. math.floor(ctx.penalty*10)/10 .. " s"
+  " usage: " .. ctx.avg_micros .. " us/s .. (" .. percent .. "%) " ..
+  "penalty: " .. math.floor(ctx.penalty*10)/10 .. " s"
 
   if ctx.penalty <= 0.1 then
     return txt, 0x00FF00
@@ -57,11 +57,11 @@ end
 
 local timer = 0
 minetest.register_globalstep(function(dtime)
-	timer = timer + dtime
-	if timer < 1 then
-		return
-	end
-	timer = 0
+  timer = timer + dtime
+  if timer < 1 then
+    return
+  end
+  timer = 0
 
   for _, player in ipairs(minetest.get_connected_players()) do
     local playername = player:get_player_name()

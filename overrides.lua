@@ -10,7 +10,7 @@ mesecon.queue.execute = function(self, action)
 
     local ctx = mesecons_debug.get_context(action.pos)
     ctx.micros = ctx.micros + micros
-		ctx.mtime = t0
+    ctx.mtime = t0
 
     --print("execute() func=" .. action.func .. " pos=" .. minetest.pos_to_string(action.pos) .. " micros=" .. micros)
   end

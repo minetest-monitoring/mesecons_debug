@@ -29,15 +29,15 @@ end
 -- luaC
 local BASENAME = "mesecons_luacontroller:luacontroller"
 for a = 0, 1 do -- 0 = off  1 = on
-for b = 0, 1 do
-for c = 0, 1 do
-for d = 0, 1 do
-	local cid = tostring(d)..tostring(c)..tostring(b)..tostring(a)
-	local node_name = BASENAME..cid
-  override_node_timer(node_name)
-end
-end
-end
+  for b = 0, 1 do
+    for c = 0, 1 do
+      for d = 0, 1 do
+        local cid = tostring(d)..tostring(c)..tostring(b)..tostring(a)
+        local node_name = BASENAME..cid
+        override_node_timer(node_name)
+      end
+    end
+  end
 end
 
 -- blinky

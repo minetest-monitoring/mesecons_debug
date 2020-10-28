@@ -23,7 +23,7 @@ minetest.register_chatcommand("mesecons_stats", {
 
     local ctx = mesecons_debug.get_context(player:get_pos())
     return true, "Mapblock usage: " .. ctx.avg_micros .. " us/s " ..
-      "(across " .. mesecons_debug.context_store_size .." mapblocks)"
+    "(across " .. mesecons_debug.context_store_size .." mapblocks)"
   end
 })
 
