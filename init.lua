@@ -2,6 +2,8 @@ local MP = minetest.get_modpath("mesecons_debug")
 
 mesecons_debug = {
   enabled = true,
+  -- blockpos-hash => context
+  context_store = {},
   context_store_size = 0,
 
   -- mapblock-hash -> true

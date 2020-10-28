@@ -7,15 +7,11 @@ if has_monitoring then
 	penalized_mapblock_count = monitoring.gauge("mesecons_debug_penalized_mapblock_count", "count of penalized mapblocks")
 end
 
-
--- blockpos-hash => context
-local context_store = {}
-
 mesecons_debug.get_context = function(pos)
 	local blockpos = mesecons_debug.get_blockpos(pos)
 	local hash = minetest.hash_node_position(blockpos)
 
-	local ctx = context_store[hash]
+	local ctx = mesecons_debug.context_store[hash]
 	if not ctx then
 		-- create a new context
 		ctx = {
@@ -29,7 +25,7 @@ mesecons_debug.get_context = function(pos)
 			-- mtime
 			mtime = minetest.get_us_time(),
 		}
-		context_store[hash] = ctx
+		mesecons_debug.context_store[hash] = ctx
 	end
 
 	-- update context
@@ -51,11 +47,11 @@ minetest.register_globalstep(function(dtime)
 	local cleanup_time_micros = 300 * 1000 * 1000
 
 	mesecons_debug.context_store_size = 0
-	for hash, ctx in pairs(context_store) do
+	for hash, ctx in pairs(mesecons_debug.context_store) do
 		local time_diff = now - ctx.mtime
 		if time_diff > cleanup_time_micros then
 			-- remove item
-			context_store[hash] = nil
+			mesecons_debug.context_store[hash] = nil
 
 		else
 			-- calculate stuff
