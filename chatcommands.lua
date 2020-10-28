@@ -13,6 +13,33 @@ minetest.register_chatcommand("mesecons_hud", {
   end
 })
 
+minetest.register_chatcommand("mesecons_global_stats", {
+  description = "shows the global mesecons stats",
+  func = function()
+    local top_ctx, top_hash
+
+    for hash, ctx in pairs(mesecons_debug.context_store) do
+      if not top_ctx or top_ctx.avg_micros < ctx.avg_micros then
+        -- store context with the most average time
+        top_ctx = ctx
+        top_hash = hash
+      end
+    end
+
+    local txt
+    if top_ctx then
+      local pos = minetest.get_position_from_hash(top_hash)
+
+      txt = "Most prominent mesecons usage at mapblock " .. minetest.pos_to_string(pos) ..
+        " with " .. top_ctx .. " seconds penalty and " .. top_ctx.avg_micros .. " us average use"
+    else
+      txt = "no context available"
+    end
+
+    return true, txt
+  end
+})
+
 minetest.register_chatcommand("mesecons_stats", {
   description = "shows some mesecons stats for the current position",
   func = function(name)
