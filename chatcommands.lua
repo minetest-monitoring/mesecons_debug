@@ -31,7 +31,7 @@ minetest.register_chatcommand("mesecons_global_stats", {
       local pos = minetest.get_position_from_hash(top_hash)
 
       txt = "Most prominent mesecons usage at mapblock " .. minetest.pos_to_string(pos) ..
-        " with " .. top_ctx .. " seconds penalty and " .. top_ctx.avg_micros .. " us average use"
+        " with " .. top_ctx.penalty .. " seconds penalty and " .. top_ctx.avg_micros .. " us average use"
     else
       txt = "no context available"
     end
