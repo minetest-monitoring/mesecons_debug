@@ -25,6 +25,10 @@ mesecon.queue.add_action = function(self, pos, func, params, time, overwritechec
 
     time = time or 0
     time = time + ctx.penalty
+		if time > mesecons_debug.penalty_mapblock_disabled then
+			-- penalty exceeded disable-threshold, don't even add the action
+			return
+		end
 
     old_add_action(self, pos, func, params, time, overwritecheck, priority)
     --print("add_action() pos=" .. minetest.pos_to_string(pos))
