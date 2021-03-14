@@ -1,10 +1,10 @@
 local MP = minetest.get_modpath("mesecons_debug")
 
 mesecons_debug = {
-  enabled = true,
-  -- blockpos-hash => context
-  context_store = {},
-  context_store_size = 0,
+	enabled = true,
+	-- blockpos-hash => context
+	context_store = {},
+	context_store_size = 0,
 
 	-- max penalty in seconds
 	max_penalty = 300,
@@ -15,14 +15,14 @@ mesecons_debug = {
 	-- time between /mesecons_clear_penalty commands, in seconds
 	penalty_clear_cooldown = 120,
 
-  -- mapblock-hash -> true
-  whitelist = {},
+	-- mapblock-hash -> true
+	whitelist = {},
 
-  -- playername => true
-  hud = {},
+	-- playername => true
+	hud = {},
 
 	-- cpu usage in microseconds that triggers the penalty mechanism
-  max_usage_micros = 15000
+	max_usage_micros = 15000
 }
 
 dofile(MP.."/functions.lua")

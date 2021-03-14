@@ -3,9 +3,9 @@
 local cooldown = {}
 
 minetest.register_chatcommand("mesecons_clear_penalty", {
-  description = "clears the penalty in the current mapblock " ..
+	description = "clears the penalty in the current mapblock " ..
 		"(cooldown: " .. mesecons_debug.penalty_clear_cooldown .. ")",
-  func = function(name)
+	func = function(name)
 		local player = minetest.get_player_by_name(name)
 		if not player then
 			return
@@ -25,5 +25,5 @@ minetest.register_chatcommand("mesecons_clear_penalty", {
 		ctx.penalty = 0
 
 		return true, "penalty reset"
-  end
+	end
 })
