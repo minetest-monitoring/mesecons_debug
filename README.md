@@ -30,3 +30,31 @@ All of these commands require the `mesecons_debug` privilege.
 * `/mesecons_whitelist_get` shows the list of whitelisted mapblocks
 * `/mesecons_whitelist_add` adds the current mapblock to the whitelist
 * `/mesecons_whitelist_remove` removes the current mapblock from the whitelist
+
+## Penalty controller
+
+Can query the penalty and usage values of the placed-in mapblock (requires the `digiline` mod)
+
+Example code to query it with the luacontroller:
+
+```lua
+if event.type == "program" then
+  digiline_send("penalty_ctrl", "GET")
+end
+
+if event.type == "digiline" and event.channel == "penalty_ctrl" then
+  --[[
+  event.msg = {
+    micros = 0,
+    avg_micros = 0,
+    penalty = 0,
+    whitelisted = false
+  }
+  --]]
+end
+```
+
+# License
+
+* textures/penalty_controller_top.png
+  * CC BY-SA 3.0 https://cheapiesystems.com/git/digistuff

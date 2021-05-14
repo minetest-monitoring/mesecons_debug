@@ -37,6 +37,10 @@ dofile(MP.."/luacontroller.lua")
 dofile(MP.."/chatcommands.lua")
 dofile(MP.."/hud.lua")
 
+if minetest.get_modpath("digilines") then
+	dofile(MP.."/penalty_controller.lua")
+end
+
 mesecons_debug.load_whitelist()
 
 print("[OK] mesecons_debug loaded")

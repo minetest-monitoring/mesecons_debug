@@ -14,5 +14,6 @@ read_globals = {
 	"vector", "ItemStack",
 	"dump",
 
-	"monitoring"
+	"monitoring",
+	"digiline"
 }
