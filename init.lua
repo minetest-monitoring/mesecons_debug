@@ -22,7 +22,7 @@ mesecons_debug = {
 	hud = {},
 
 	-- cpu usage in microseconds that triggers the penalty mechanism
-	max_usage_micros = 15000
+	max_usage_micros = tonumber(minetest.settings:get("mesecons_debug.max_usage_micros")) or 15000
 }
 
 dofile(MP.."/functions.lua")
