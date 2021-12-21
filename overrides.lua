@@ -8,12 +8,13 @@ mesecon.queue.execute = function(self, action)
     end
 
     local t0 = minetest.get_us_time()
-    old_execute(self, action)
+    local rv = old_execute(self, action)
     local micros = minetest.get_us_time() - t0
 
     local ctx = mesecons_debug.get_context(action.pos)
     ctx.micros = ctx.micros + micros
-    ctx.mtime = t0
+    ctx.mtime = t0  -- modification time
+    return rv
 end
 
 
@@ -26,9 +27,7 @@ mesecon.queue.add_action = function(self, pos, func, params, time, overwritechec
 
     local ctx = mesecons_debug.get_context(pos)
 
-    time = time or 0
-    time = time + ctx.penalty
-    if time > penalty_mapblock_disabled then
+    if (time or 0) + ctx.penalty > penalty_mapblock_disabled then
         -- penalty exceeded disable-threshold, don't even add the action
         return
     end
