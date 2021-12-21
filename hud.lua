@@ -1,4 +1,6 @@
 
+local max_usage_micros = mesecons_debug.settings.max_usage_micros
+
 local HUD_POSITION = {x = 0.1, y = 0.8}
 local HUD_ALIGNMENT = {x = 1, y = 0}
 
@@ -33,7 +35,7 @@ local function get_info(player)
   local blockpos = mesecons_debug.get_blockpos(pos)
   local ctx = mesecons_debug.get_context(pos)
 
-  local percent = math.floor(ctx.avg_micros / mesecons_debug.max_usage_micros * 100)
+  local percent = math.floor(ctx.avg_micros / max_usage_micros * 100)
 
   local txt = "Mesecons @ (" .. blockpos.x .. "/" .. blockpos.y .. "/" .. blockpos.z .. ") "
 

@@ -7,6 +7,9 @@ if has_monitoring then
 	penalized_mapblock_count = monitoring.gauge("mesecons_debug_penalized_mapblock_count", "count of penalized mapblocks")
 end
 
+local max_penalty = mesecons_debug.settings.max_penalty
+local max_usage_micros = mesecons_debug.settings.max_usage_micros
+
 local timer = 0
 minetest.register_globalstep(function(dtime)
 	timer = timer + dtime
@@ -31,13 +34,13 @@ minetest.register_globalstep(function(dtime)
 			ctx.micros = 0
 
 			-- apply penalty values
-			if ctx.avg_micros > (mesecons_debug.max_usage_micros * 10) then
+			if ctx.avg_micros > (max_usage_micros * 10) then
 				-- 10 times the limit used, potential abuse, add a greater penalty value
-				ctx.penalty = math.min(ctx.penalty + 5, mesecons_debug.max_penalty)
+				ctx.penalty = math.min(ctx.penalty + 5, max_penalty)
 
-			elseif ctx.avg_micros > mesecons_debug.max_usage_micros then
+			elseif ctx.avg_micros > max_usage_micros then
 				-- add penalty value
-				ctx.penalty = math.min(ctx.penalty + 0.2, mesecons_debug.max_penalty)
+				ctx.penalty = math.min(ctx.penalty + 0.2, max_penalty)
 
 			elseif ctx.penalty > 0 then
 				-- remove penalty (very slowly)

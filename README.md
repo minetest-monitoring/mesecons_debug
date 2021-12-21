@@ -11,7 +11,7 @@ The current mapblock-stats can be viewed with `/mesecons_hud on`
 
 ## Settings
 
-* `mesecons_debug.max_usage_micros` default: 15000
+* see `settingtypes.txt`
 
 ## Privs
 

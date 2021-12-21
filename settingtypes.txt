@@ -1,0 +1,11 @@
+# max penalty in seconds
+mesecons_debug.max_penalty (maximum penalty) int 300
+
+# everything above this threshold will disable the mesecons in that mapblock
+mesecons_debug.penalty_mapblock_disabled (threshold to disable mapblock) int 60
+
+# time between /mesecons_clear_penalty commands, in seconds
+mesecons_debug.penalty_clear_cooldown (penalty clear command cooldown interval) int 120
+
+# cpu usage in microseconds that triggers the penalty mechanism
+mesecons_debug.max_usage_micros (usage to trigger penalties) int 15000
