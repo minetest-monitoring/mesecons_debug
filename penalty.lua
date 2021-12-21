@@ -27,7 +27,7 @@ minetest.register_globalstep(function(dtime)
 
     local penalized_count = 0
 
-    for hash, ctx in pairs(mesecons_debug.context_store) do
+    for _, ctx in pairs(mesecons_debug.context_store) do
         -- calculate moving average
         ctx.avg_micros = math.floor((ctx.avg_micros * 0.8) + (ctx.micros * 0.2))
         -- reset cpu usage counter
@@ -42,7 +42,7 @@ minetest.register_globalstep(function(dtime)
             -- add penalty value
             ctx.penalty = math.min(ctx.penalty + 0.2, max_penalty)
 
-        elseif ctx.penalty > 0 then
+        else
             -- remove penalty (very slowly)
             ctx.penalty = math.max(ctx.penalty - 0.001, 0)
         end

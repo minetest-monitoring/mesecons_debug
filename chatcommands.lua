@@ -97,9 +97,7 @@ minetest.register_chatcommand("mesecons_whitelist_add", {
             return
         end
 
-        local ppos = player:get_pos()
-        local blockpos = mesecons_debug.get_blockpos(ppos)
-        local hash = minetest.hash_node_position(blockpos)
+        local hash = mesecons_debug.haspos(player:get_pos())
 
         mesecons_debug.whitelist[hash] = true
         mesecons_debug.save_whitelist()
@@ -117,9 +115,7 @@ minetest.register_chatcommand("mesecons_whitelist_remove", {
             return
         end
 
-        local ppos = player:get_pos()
-        local blockpos = mesecons_debug.get_blockpos(ppos)
-        local hash = minetest.hash_node_position(blockpos)
+        local hash = mesecons_debug.haspos(player:get_pos())
 
         mesecons_debug.whitelist[hash] = nil
         mesecons_debug.save_whitelist()
