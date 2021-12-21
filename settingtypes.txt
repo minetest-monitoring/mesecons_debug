@@ -9,3 +9,9 @@ mesecons_debug.penalty_clear_cooldown (penalty clear command cooldown interval) 
 
 # cpu usage in microseconds that triggers the penalty mechanism
 mesecons_debug.max_usage_micros (usage to trigger penalties) int 15000
+
+# remove unmodified penalty data for a mapblock from memory after this many microseconds
+mesecons_debug.cleanup_time_micros (penalty data lifetime) int 300000000
+
+# interval between running penalty checks
+mesecons_debug.penalty_check_interval (penalty check interval) int 1

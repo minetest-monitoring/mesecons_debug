@@ -9,18 +9,22 @@ end
 
 local max_penalty = mesecons_debug.settings.max_penalty
 local max_usage_micros = mesecons_debug.settings.max_usage_micros
+local cleanup_time_micros = mesecons_debug.settings.cleanup_time_micros
+local penalty_check_interval = mesecons_debug.settings.penalty_check_interval
 
 local timer = 0
 minetest.register_globalstep(function(dtime)
 	timer = timer + dtime
-	if timer < 1 then return end
-	timer=0
+	if timer < penalty_check_interval then return end
+	timer = 0
+
+	if has_monitoring then
+		mesecons_debug.context_store_size = 0
+	end
 
 	local penalized_count = 0
 	local now = minetest.get_us_time()
-	local cleanup_time_micros = 300 * 1000 * 1000
 
-	mesecons_debug.context_store_size = 0
 	for hash, ctx in pairs(mesecons_debug.context_store) do
 		local time_diff = now - ctx.mtime
 		if time_diff > cleanup_time_micros then
@@ -47,9 +51,11 @@ minetest.register_globalstep(function(dtime)
 				ctx.penalty = math.max(ctx.penalty - 0.001, 0)
 			end
 
-			mesecons_debug.context_store_size = mesecons_debug.context_store_size + 1
-			if ctx.penalty > 0 then
-				penalized_count = penalized_count + 1
+			if has_monitoring then
+				mesecons_debug.context_store_size = mesecons_debug.context_store_size + 1
+				if ctx.penalty > 0 then
+					penalized_count = penalized_count + 1
+				end
 			end
 
 		end

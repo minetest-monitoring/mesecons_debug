@@ -15,7 +15,7 @@ mesecons_debug.get_context = function(pos)
 			-- time penalty
 			penalty = 0,
 
-			-- mtime
+			-- modification time
 			mtime = minetest.get_us_time(),
 		}
 		mesecons_debug.context_store[hash] = ctx
