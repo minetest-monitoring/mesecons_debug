@@ -12,15 +12,13 @@ mesecons_debug.get_context = function(pos)
             avg_micros = 0,
             -- time penalty
             penalty = 0,
-
             -- modification time
             mtime = minetest.get_us_time(),
+            -- whitelist status
+            whitelisted = mesecons_debug.context:contains(hash)
         }
         mesecons_debug.context_store[hash] = ctx
     end
-
-    -- whitelist flag
-    ctx.whitelisted = mesecons_debug.whitelist[hash]
 
     return ctx
 end

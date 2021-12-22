@@ -78,7 +78,7 @@ minetest.register_chatcommand("mesecons_whitelist_get", {
     func = function()
         local whitelist = "mesecons whitelist:\n"
         local count = 0
-        for hash, _ in pairs(mesecons_debug.whitelist) do
+        for hash, _ in pairs(mesecons_debug.storage:to_table().fields) do
             whitelist = whitelist .. minetest.pos_to_string(minetest.get_position_from_hash(hash)) .. "\n"
             count = count + 1
         end
@@ -97,10 +97,10 @@ minetest.register_chatcommand("mesecons_whitelist_add", {
             return
         end
 
-        local hash = mesecons_debug.haspos(player:get_pos())
-
-        mesecons_debug.whitelist[hash] = true
-        mesecons_debug.save_whitelist()
+        local hash = mesecons_debug.hashpos(player:get_pos())
+        local ctx = mesecons_debug.get_context(hash)
+        ctx.whitelisted = true
+        mesecons_debug.storage:set_string(hash, "1")
 
         return true, "mapblock whitlisted"
     end
@@ -115,10 +115,10 @@ minetest.register_chatcommand("mesecons_whitelist_remove", {
             return
         end
 
-        local hash = mesecons_debug.haspos(player:get_pos())
-
-        mesecons_debug.whitelist[hash] = nil
-        mesecons_debug.save_whitelist()
+        local hash = mesecons_debug.hashpos(player:get_pos())
+        local ctx = mesecons_debug.get_context(hash)
+        ctx.whitelisted = true
+        mesecons_debug.storage:set_string(hash, "")
 
         return true, "mapblock removed from whitelist"
     end
