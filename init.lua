@@ -15,22 +15,19 @@ mesecons_debug = {
 }
 
 dofile(MP .. "/settings.lua")
-dofile(MP .. "/functions.lua")
-dofile(MP .. "/mesecons_queue_overrides.lua")
+dofile(MP .. "/util.lua")
 dofile(MP .. "/privs.lua")
-dofile(MP .. "/flush.lua")
 dofile(MP .. "/context.lua")
 dofile(MP .. "/penalty.lua")
-dofile(MP .. "/clear_penalty.lua")
-dofile(MP .. "/overrides.lua")
-dofile(MP .. "/luacontroller.lua")
-dofile(MP .. "/chatcommands.lua")
 dofile(MP .. "/hud.lua")
+dofile(MP .. "/overrides/mesecons_queue.lua")
+dofile(MP .. "/overrides/node_timers.lua")
+dofile(MP .. "/commands/flush.lua")
+dofile(MP .. "/commands/clear_penalty.lua")
+dofile(MP .. "/commands/basic_commands.lua")
 
 if minetest.get_modpath("digilines") then
     dofile(MP .. "/penalty_controller.lua")
 end
 
-mesecons_debug.load_legacy_whitelist()
-
-print("[OK] mesecons_debug loaded")
+dofile(MP .. "/compat/convert_old_whitelist.lua")

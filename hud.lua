@@ -55,7 +55,7 @@ end
 local timer = 0
 minetest.register_globalstep(function(dtime)
     timer = timer + dtime
-    if timer < 1 then
+    if timer < 1 then  -- TODO hud refresh interval should be a config option
         return
     end
     timer = 0
@@ -64,6 +64,7 @@ minetest.register_globalstep(function(dtime)
         local playername = player:get_player_name()
         local hud_data = hud[playername]
         local hud_enable = mesecons_debug.hud[playername]
+
         if hud_enable then
             local txt, color = get_info(player)
             player:hud_change(hud_data.txt, "text", txt)
@@ -72,10 +73,6 @@ minetest.register_globalstep(function(dtime)
         elseif hud_enable == false then
             mesecons_debug.hud[playername] = nil
             player:hud_change(hud_data.txt, "text", "")
-
         end
-
     end
-
-
 end)

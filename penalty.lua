@@ -1,11 +1,9 @@
 local max_penalty = mesecons_debug.settings.max_penalty
 local max_usage_micros = mesecons_debug.settings.max_usage_micros
-local cleanup_time_micros = mesecons_debug.settings.cleanup_time_micros
 local penalty_check_interval = mesecons_debug.settings.penalty_check_interval
 
 local has_monitoring = minetest.get_modpath("monitoring")
 local mapblock_count, penalized_mapblock_count
-
 if has_monitoring then
     mapblock_count = monitoring.gauge("mesecons_debug_mapblock_count", "count of tracked mapblocks")
     penalized_mapblock_count = monitoring.gauge("mesecons_debug_penalized_mapblock_count", "count of penalized mapblocks")
@@ -28,6 +26,12 @@ minetest.register_globalstep(function(dtime)
     local penalized_count = 0
 
     for _, ctx in pairs(mesecons_debug.context_store) do
+        -- TODO: make this saner
+        -- TODO: instead of penalizing based on exceeding a fixed quantity,
+        -- TODO: should penalize based on whether dtimes are actually exceeding
+        -- TODO: the length of a server tick, and how much of the total mesecons
+        -- TODO: load is due to a particular context
+
         -- calculate moving average
         ctx.avg_micros = math.floor((ctx.avg_micros * 0.8) + (ctx.micros * 0.2))
         -- reset cpu usage counter
@@ -61,21 +65,3 @@ minetest.register_globalstep(function(dtime)
     end
 end)
 
-
-local cleanup_timer = 0
-minetest.register_globalstep(function(dtime)
-    cleanup_timer = cleanup_timer + dtime
-    if cleanup_timer < penalty_check_interval then
-        return
-    end
-    cleanup_timer = 0
-
-    local now = minetest.get_us_time()
-    for hash, ctx in pairs(mesecons_debug.context_store) do
-        local time_diff = now - ctx.mtime
-        if time_diff > cleanup_time_micros then
-            -- remove item
-            mesecons_debug.context_store[hash] = nil
-        end
-    end
-end)
