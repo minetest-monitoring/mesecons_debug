@@ -2,21 +2,21 @@ local MP = minetest.get_modpath("mesecons_debug")
 
 mesecons_debug = {
     enabled = true,
+
     -- blockpos-hash => context
     context_store = {},
     context_store_size = 0,
 
-    -- mapblock-hash -> true
-    whitelist = {},
+    -- persistent storage for whitelist
+    storage = minetest.get_mod_storage(),
 
     -- playername => true
     hud = {},
-
 }
 
 dofile(MP .. "/settings.lua")
 dofile(MP .. "/functions.lua")
-dofile(MP .. "/whitelist.lua")
+dofile(MP .. "/mesecons_queue_overrides.lua")
 dofile(MP .. "/privs.lua")
 dofile(MP .. "/flush.lua")
 dofile(MP .. "/context.lua")
@@ -31,6 +31,6 @@ if minetest.get_modpath("digilines") then
     dofile(MP .. "/penalty_controller.lua")
 end
 
-mesecons_debug.load_whitelist()
+mesecons_debug.load_legacy_whitelist()
 
 print("[OK] mesecons_debug loaded")
