@@ -1,59 +1,87 @@
-local max_penalty = mesecons_debug.settings.max_penalty
-local max_usage_micros = mesecons_debug.settings.max_usage_micros
-local penalty_check_interval = mesecons_debug.settings.penalty_check_interval
+local expected_dtime = tonumber(minetest.settings:get("dedicated_server_step")) or 0.09
 
-local has_monitoring = minetest.get_modpath("monitoring")
+local max_penalty = mesecons_debug.settings.max_penalty
+local low_lag_ratio = mesecons_debug.settings.low_lag_ratio
+local high_lag_ratio = mesecons_debug.settings.high_lag_ratio
+local high_load_ratio = mesecons_debug.settings.high_load_ratio
+local penalty_check_steps = mesecons_debug.settings.penalty_check_steps
+
+local high_lag_dtime = expected_dtime * high_lag_ratio
+
+local max = math.max
+local min = math.min
+
+local elapsed_steps = 0
+local elapsed = 0
+
+local has_monitoring = mesecons_debug.has.monitoring
 local mapblock_count, penalized_mapblock_count
 if has_monitoring then
     mapblock_count = monitoring.gauge("mesecons_debug_mapblock_count", "count of tracked mapblocks")
     penalized_mapblock_count = monitoring.gauge("mesecons_debug_penalized_mapblock_count", "count of penalized mapblocks")
 end
 
-local timer = 0
 minetest.register_globalstep(function(dtime)
-    -- TODO: there should be 2 versions of this function; one for has_monitoring, one for not
-    -- TODO: but functional fixes need done first
-    timer = timer + dtime
-    if timer < penalty_check_interval then
+    elapsed = elapsed + dtime
+    elapsed_steps = elapsed_steps + 1
+    if dtime < high_lag_dtime and elapsed_steps < penalty_check_steps then
         return
     end
-    timer = 0
 
-    if has_monitoring then
-        mesecons_debug.context_store_size = 0
+    local context_store_size = mesecons_debug.context_store_size
+    local average_total_micros = (mesecons_debug.total_micros * 0.2) + (mesecons_debug.average_total_micros * 0.8)
+    mesecons_debug.average_total_micros = average_total_micros
+
+    if context_store_size == 0 then
+        -- nothing to do, but reset counters
+        elapsed = 0
+        elapsed_steps = 0
+        mesecons_debug.total_micros = 0
+        return
     end
 
-    local penalized_count = 0
+    -- how much lag is there?
+    local lag = (elapsed / elapsed_steps) / expected_dtime
+    local is_high_lag = lag > high_lag_ratio
+    local is_moderate_lag = lag > low_lag_ratio
 
+    -- how much of the lag was mesecons?
+    local mesecons_load = average_total_micros / (elapsed * 1000000)
+    local is_high_load = mesecons_load > high_load_ratio
+
+    -- avg load per active context
+    local avg_avg_micros = average_total_micros / context_store_size
+
+    local penalized_count = 0  -- for monitoring
+    --[[
+    in high lag, penalize mesecons unless it's very low usage
+    in moderate lag, penalize mesecons that's being excessive, lighten penalties for the rest
+    if low lag, lighten penalties (mostly)
+    ]]
     for _, ctx in pairs(mesecons_debug.context_store) do
-        -- TODO: make this saner
-        -- TODO: instead of penalizing based on exceeding a fixed quantity,
-        -- TODO: should penalize based on whether dtimes are actually exceeding
-        -- TODO: the length of a server tick, and how much of the total mesecons
-        -- TODO: load is due to a particular context
+        if not ctx.whitelisted then
+            -- moving average
+            ctx.avg_micros = (ctx.avg_micros * 0.8) + (ctx.micros * 0.2)
+            -- reset cpu usage counter
+            ctx.micros = 0
 
-        -- calculate moving average
-        ctx.avg_micros = math.floor((ctx.avg_micros * 0.8) + (ctx.micros * 0.2))
-        -- reset cpu usage counter
-        ctx.micros = 0
+            local avg_micros = ctx.avg_micros
+            local relative_load = max(0.1, min(avg_micros / avg_avg_micros, 10))
 
-        -- apply penalty values
-        if ctx.avg_micros > (max_usage_micros * 10) then
-            -- 10 times the limit used, potential abuse, add a greater penalty value
-            ctx.penalty = math.min(ctx.penalty + 5, max_penalty)
+            local new_penalty
+            if is_high_lag or (is_moderate_lag and is_high_load) then
+                new_penalty = ctx.penalty + relative_load - 0.1
 
-        elseif ctx.avg_micros > max_usage_micros then
-            -- add penalty value
-            ctx.penalty = math.min(ctx.penalty + 0.2, max_penalty)
+            elseif is_moderate_lag then
+                new_penalty = ctx.penalty + (relative_load * 0.1) - 0.1
 
-        else
-            -- remove penalty (very slowly)
-            ctx.penalty = math.max(ctx.penalty - 0.001, 0)
-        end
+            else
+                new_penalty = ctx.penalty + (relative_load * 0.01) - 0.5
 
-        if has_monitoring then
-            mesecons_debug.context_store_size = mesecons_debug.context_store_size + 1
-            if ctx.penalty > 0 then
+            end
+
+            ctx.penalty = max(0, min(new_penalty, max_penalty))
+            if has_monitoring and new_penalty > 0 then
                 penalized_count = penalized_count + 1
             end
         end
@@ -63,5 +91,9 @@ minetest.register_globalstep(function(dtime)
         mapblock_count.set(mesecons_debug.context_store_size)
         penalized_mapblock_count.set(penalized_count)
     end
-end)
 
+    -- cleanup
+    elapsed = 0
+    elapsed_steps = 0
+    mesecons_debug.total_micros = 0
+end)

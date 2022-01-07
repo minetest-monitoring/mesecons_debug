@@ -1,3 +1,5 @@
+local storage = mesecons_debug.storage
+
 -- returns the context data for the node-position
 mesecons_debug.get_context = function(pos)
     local hash = mesecons_debug.hashpos(pos)
@@ -8,16 +10,17 @@ mesecons_debug.get_context = function(pos)
         ctx = {
             -- usage in us
             micros = 0,
-            -- average micros per second
+            -- "running average" micros per second
             avg_micros = 0,
             -- time penalty
             penalty = 0,
             -- modification time
             mtime = minetest.get_us_time(),
             -- whitelist status
-            whitelisted = mesecons_debug.context:contains(hash)
+            whitelisted = storage:contains(hash)
         }
         mesecons_debug.context_store[hash] = ctx
+        mesecons_debug.context_store_size = mesecons_debug.context_store_size + 1
     end
 
     return ctx

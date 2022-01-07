@@ -1,10 +1,12 @@
-local cleanup_time_micros = mesecons_debug.settings.cleanup_time_micros
+local gc_interval = mesecons_debug.settings.gc_interval
+local cleanup_time_micros = gc_interval * 1000000
+
 local context_store = mesecons_debug.context_store
 
 local cleanup_timer = 0
 minetest.register_globalstep(function(dtime)
     cleanup_timer = cleanup_timer + dtime
-    if cleanup_timer < cleanup_time_micros then
+    if cleanup_timer < gc_interval then
         return
     end
     cleanup_timer = 0
@@ -15,6 +17,7 @@ minetest.register_globalstep(function(dtime)
         if time_diff > cleanup_time_micros then
             -- remove item
             context_store[hash] = nil
+            mesecons_debug.context_store_size = mesecons_debug.context_store_size - 1
         end
     end
 end)
