@@ -1,10 +1,28 @@
 local expected_dtime = tonumber(minetest.settings:get("dedicated_server_step")) or 0.09
 
+local subscribe_for_modification = mesecons_debug.settings._subscribe_for_modification
 local max_penalty = mesecons_debug.settings.max_penalty
+subscribe_for_modification("max_penalty", function(value) max_penalty = value end)
 local low_lag_ratio = mesecons_debug.settings.low_lag_ratio
+subscribe_for_modification("low_lag_ratio", function(value) low_lag_ratio = value end)
 local high_lag_ratio = mesecons_debug.settings.high_lag_ratio
+subscribe_for_modification("high_lag_ratio", function(value) high_lag_ratio = value end)
 local high_load_ratio = mesecons_debug.settings.high_load_ratio
+subscribe_for_modification("high_load_ratio", function(value) high_load_ratio = value end)
 local penalty_check_steps = mesecons_debug.settings.penalty_check_steps
+subscribe_for_modification("penalty_check_steps", function(value) penalty_check_steps = value end)
+local high_penalty_scale = mesecons_debug.settings.high_penalty_scale
+subscribe_for_modification("high_penalty_scale", function(value) high_penalty_scale = value end)
+local high_penalty_offset = mesecons_debug.settings.high_penalty_offset
+subscribe_for_modification("high_penalty_offset", function(value) high_penalty_offset = value end)
+local medium_penalty_scale = mesecons_debug.settings.medium_penalty_scale
+subscribe_for_modification("medium_penalty_scale", function(value) medium_penalty_scale = value end)
+local medium_penalty_offset = mesecons_debug.settings.medium_penalty_offset
+subscribe_for_modification("medium_penalty_offset", function(value) medium_penalty_offset = value end)
+local low_penalty_scale = mesecons_debug.settings.low_penalty_scale
+subscribe_for_modification("low_penalty_scale", function(value) low_penalty_scale = value end)
+local low_penalty_offset = mesecons_debug.settings.low_penalty_offset
+subscribe_for_modification("low_penalty_offset", function(value) low_penalty_offset = value end)
 
 local high_lag_dtime = expected_dtime * high_lag_ratio
 
@@ -32,7 +50,7 @@ minetest.register_globalstep(function(dtime)
     local average_total_micros = (mesecons_debug.total_micros * 0.2) + (mesecons_debug.average_total_micros * 0.8)
     mesecons_debug.average_total_micros = average_total_micros
 
-    if context_store_size == 0 then
+    if context_store_size == 0 or average_total_micros == 0 then
         -- nothing to do, but reset counters
         elapsed = 0
         elapsed_steps = 0
@@ -70,14 +88,13 @@ minetest.register_globalstep(function(dtime)
 
             local new_penalty
             if is_high_lag or (is_moderate_lag and is_high_load) then
-                new_penalty = ctx.penalty + relative_load - 0.1
+                new_penalty = ctx.penalty + (relative_load * high_penalty_scale) + high_penalty_offset
 
             elseif is_moderate_lag then
-                new_penalty = ctx.penalty + (relative_load * 0.1) - 0.1
+                new_penalty = ctx.penalty + (relative_load * medium_penalty_scale) + medium_penalty_offset
 
             else
-                new_penalty = ctx.penalty + (relative_load * 0.01) - 0.5
-
+                new_penalty = ctx.penalty + (relative_load * low_penalty_scale) + low_penalty_offset
             end
 
             ctx.penalty = max(0, min(new_penalty, max_penalty))

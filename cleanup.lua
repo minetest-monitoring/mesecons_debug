@@ -1,4 +1,7 @@
+local subscribe_for_modification = mesecons_debug.settings._subscribe_for_modification
 local gc_interval = mesecons_debug.settings.gc_interval
+subscribe_for_modification("gc_interval", function(value) gc_interval = value end)
+
 local cleanup_time_micros = gc_interval * 1000000
 
 local context_store = mesecons_debug.context_store

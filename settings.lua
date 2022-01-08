@@ -11,8 +11,47 @@ mesecons_debug.settings = {
     -- remove unmodified penalty data for a mapblock from memory after this many seconds
     gc_interval = tonumber(minetest.settings:get("mesecons_debug.gc_interval")) or 61,
 
+    -- measured in server steps
     low_lag_ratio = tonumber(minetest.settings:get("mesecons_debug.low_lag_ratio")) or 3,
+
+    -- measured in server steps
     high_lag_ratio = tonumber(minetest.settings:get("mesecons_debug.high_lag_ratio")) or 10,
+
+    -- percentage of total server load due to mesecons
     high_load_ratio = tonumber(minetest.settings:get("mesecons_debug.high_load_ratio")) or 0.3,
+
+    -- steps between updating penalties
     penalty_check_steps = tonumber(minetest.settings:get("mesecons_debug.penalty_check_steps")) or 100,
+
+    -- scale of penalty during high load
+    high_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.high_penalty_scale")) or 1,
+
+    -- offset of penalty during high load
+    high_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.high_penalty_offset")) or -0.1,
+
+    -- scale of penalty during medium load
+    medium_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_scale")) or 1/3,
+
+    -- offset of penalty during medium load
+    medium_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_offset")) or -0.1,
+
+    -- scale of penalty during low load
+    low_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.low_penalty_scale")) or 0.1,
+
+    -- offset of penalty during low load
+    low_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.low_penalty_offset")) or -0.5,
+
+    _listeners = {},
+    _subscribe_for_modification = function(name, func)
+        local listeners = mesecons_debug.settings._listeners[name] or {}
+        table.insert(listeners, func)
+        mesecons_debug.settings._listeners[name] = listeners
+    end,
+
+    modify_setting = function(name, value)
+        mesecons_debug.settings[name] = value
+        for _, func in ipairs(mesecons_debug.settings._listeners[name] or {}) do
+            func(value)
+        end
+    end,
 }

@@ -1,17 +1,41 @@
 # max penalty in seconds
-mesecons_debug.max_penalty (maximum penalty) int 300
+mesecons_debug.max_penalty (maximum penalty) int 120 1 3600
 
 # everything above this threshold will disable the mesecons in that mapblock
-mesecons_debug.penalty_mapblock_disabled (threshold to disable mapblock) int 60
+mesecons_debug.penalty_mapblock_disabled (threshold to disable mapblock) int 60 1 3600
 
 # time between /mesecons_clear_penalty commands, in seconds
-mesecons_debug.penalty_clear_cooldown (penalty clear command cooldown interval) int 120
+mesecons_debug.penalty_clear_cooldown (penalty clear command cooldown interval) int 120 1 3600
 
-# cpu usage in microseconds that triggers the penalty mechanism
-mesecons_debug.max_usage_micros (usage to trigger penalties) int 15000
+# remove unused mapblock penalty data from memory after this many seconds
+mesecons_debug.gc_interval (garbage collection interval) float 61 1 3600
 
-# remove unmodified penalty data for a mapblock from memory after this many microseconds
-mesecons_debug.cleanup_time_micros (penalty data lifetime) int 300000000
+# ratio between actual and expected duration of server steps, above which is considered laggy
+mesecons_debug.low_lag_ratio (low lag ratio) float 3 1 1000
 
-# interval between running penalty checks
-mesecons_debug.penalty_check_interval (penalty check interval) int 1
+# ratio between actual and expected duration of server steps, above which is considered very laggy
+mesecons_debug.high_lag_ratio (high lag ratio) float 10 1 1000
+
+# percent of server step that is due solely to mesecons, above which is considered excessive
+mesecons_debug.high_load_ratio (high load ratio) float 0.3 0 1
+
+# number of server steps between penalty updates
+mesecons_debug.penalty_check_steps (steps between penalty updates) float 100 1 10000
+
+# scale of penalty during high load
+mesecons_debug.high_penalty_scale (high penalty scale) float 1 0.01 10
+
+# offset of penalty during high load
+mesecons_debug.high_penalty_offset (high penalty offset) float -0.1 -1 1
+
+# scale of penalty during medium load
+mesecons_debug.medium_penalty_scale (medium penalty scale) float 0.333333 0.01 10
+
+# offset of penalty during medium load
+mesecons_debug.medium_penalty_offset (medium penalty offset) float -0.1 -1 1
+
+# scale of penalty during low load
+mesecons_debug.low_penalty_scale (low penalty scale) float 0.1 0.01 10
+
+# offset of penalty during low load
+mesecons_debug.low_penalty_offset (low penalty offset) float -0.5 -1 0
