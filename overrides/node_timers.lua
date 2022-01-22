@@ -21,17 +21,25 @@ local function override_node_timer(node_name)
     })
 end
 
--- luaC
-for a = 0, 1 do
-    for b = 0, 1 do
-        for c = 0, 1 do
-            for d = 0, 1 do
-                override_node_timer(("mesecons_luacontroller:luacontroller%i%i%i%i"):format(a, b, c, d))
+
+if minetest.get_modpath("mesecons_luacontroller") then
+    for a = 0, 1 do
+        for b = 0, 1 do
+            for c = 0, 1 do
+                for d = 0, 1 do
+                    override_node_timer(("mesecons_luacontroller:luacontroller%i%i%i%i"):format(a, b, c, d))
+                end
             end
         end
     end
 end
 
--- blinky
-override_node_timer("mesecons_blinkyplant:blinky_plant_off")
-override_node_timer("mesecons_blinkyplant:blinky_plant_on")
+if minetest.get_modpath("mesecons_blinkyplant") then
+    override_node_timer("mesecons_blinkyplant:blinky_plant_off")
+    override_node_timer("mesecons_blinkyplant:blinky_plant_on")
+end
+
+if minetest.get_modpath("moremesecons_adjustable_blinkyplant") then
+    override_node_timer("moremesecons_adjustable_blinkyplant:adjustable_blinky_plant_off")
+    override_node_timer("moremesecons_adjustable_blinkyplant:adjustable_blinky_plant_on")
+end
