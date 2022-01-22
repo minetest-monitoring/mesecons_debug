@@ -1,7 +1,8 @@
 minetest.register_node("mesecons_debug:penalty_controller", {
     description = "Mesecons penalty controller",
     groups = {
-        cracky = 3
+        cracky = 3,
+        not_in_creative_inventory = 1,
     },
 
     on_construct = function(pos)
@@ -63,7 +64,7 @@ minetest.register_node("mesecons_debug:penalty_controller", {
                     -- copy and send values
                     digiline:receptor_send(pos, digiline.rules.default, channel, {
                         micros = ctx.micros,
-                        avg_micros = ctx.avg_micros,
+                        avg_micros = ctx.avg_micros_per_second,
                         penalty = ctx.penalty,
                         whitelisted = ctx.whitelisted
                     })

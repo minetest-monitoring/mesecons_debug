@@ -1,4 +1,7 @@
 mesecons_debug.settings = {
+    -- in seconds
+    hud_refresh_interval = tonumber(minetest.settings:get("mesecons_debug.hud_refresh_interval")) or 1,
+
     -- max penalty in seconds
     max_penalty = tonumber(minetest.settings:get("mesecons_debug.max_penalty")) or 120,
 
@@ -18,28 +21,28 @@ mesecons_debug.settings = {
     high_lag_ratio = tonumber(minetest.settings:get("mesecons_debug.high_lag_ratio")) or 10,
 
     -- percentage of total server load due to mesecons
-    high_load_ratio = tonumber(minetest.settings:get("mesecons_debug.high_load_ratio")) or 0.3,
+    high_load_ratio = tonumber(minetest.settings:get("mesecons_debug.high_load_ratio")) or 0.33,
 
     -- steps between updating penalties
     penalty_check_steps = tonumber(minetest.settings:get("mesecons_debug.penalty_check_steps")) or 100,
 
     -- scale of penalty during high load
-    high_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.high_penalty_scale")) or 1,
+    high_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.high_penalty_scale")) or 0.5,
 
     -- offset of penalty during high load
-    high_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.high_penalty_offset")) or -0.1,
+    high_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.high_penalty_offset")) or -0.5,
 
     -- scale of penalty during medium load
-    medium_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_scale")) or 1/3,
+    medium_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_scale")) or 0.2,
 
     -- offset of penalty during medium load
-    medium_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_offset")) or -0.1,
+    medium_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_offset")) or -0.67,
 
     -- scale of penalty during low load
     low_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.low_penalty_scale")) or 0.1,
 
     -- offset of penalty during low load
-    low_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.low_penalty_offset")) or -0.5,
+    low_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.low_penalty_offset")) or -0.99,
 
     _listeners = {},
     _subscribe_for_modification = function(name, func)
@@ -49,6 +52,7 @@ mesecons_debug.settings = {
     end,
 
     modify_setting = function(name, value)
+        value = tonumber(value)
         mesecons_debug.settings[name] = value
         for _, func in ipairs(mesecons_debug.settings._listeners[name] or {}) do
             func(value)

@@ -13,3 +13,9 @@ function mesecons_debug.hashpos(pos)
         z = math.floor(pos.z / 16)
     })
 end
+
+
+function mesecons_debug.wait(n)
+    local wait_until = minetest.get_us_time() + n
+    while minetest.get_us_time() < wait_until do end
+end

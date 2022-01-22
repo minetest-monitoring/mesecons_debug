@@ -46,7 +46,7 @@ if event.type == "digiline" and event.channel == "penalty_ctrl" then
   --[[
   event.msg = {
     micros = 0,
-    avg_micros = 0,
+    avg_micros = 0, -- avg_micros_per_second
     penalty = 0,
     whitelisted = false
   }

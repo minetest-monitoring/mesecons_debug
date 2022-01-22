@@ -76,7 +76,7 @@ minetest.register_chatcommand("mesecons_whitelist_remove", {
     end
 })
 
-minetest.register_chatcommand("mesecons_debug_setting", {
+minetest.register_chatcommand("mesecons_debug_set", {
     description = "modify mesecons_debug settings",
     params = "<setting> <value>",
     privs = { mesecons_debug = true },
@@ -99,5 +99,24 @@ minetest.register_chatcommand("mesecons_debug_setting", {
         mesecons_debug.settings.modify_setting(setting, value)
 
         return true, "setting updated"
+    end
+})
+
+minetest.register_chatcommand("mesecons_debug_get", {
+    description = "get mesecons_debug settings",
+    params = "<setting>",
+    privs = { mesecons_debug = true },
+    func = function(name, setting)
+        local player = minetest.get_player_by_name(name)
+        if not player or not setting then
+            return false
+        end
+
+        local value = mesecons_debug.settings[setting]
+        if value then
+            return true, tostring(value)
+        else
+            return false, "unknown setting"
+        end
     end
 })

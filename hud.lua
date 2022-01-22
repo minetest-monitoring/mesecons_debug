@@ -1,26 +1,15 @@
+
+local hud_refresh_interval = mesecons_debug.settings.hud_refresh_interval
+mesecons_debug.settings._subscribe_for_modification("hud_refresh_interval",
+        function(value) hud_refresh_interval = value end)
+
 local HUD_POSITION = { x = 0.1, y = 0.8 }
 local HUD_ALIGNMENT = { x = 1, y = 0 }
 
-local hud = {}
-
-minetest.register_on_joinplayer(function(player)
-    local hud_data = {}
-    hud[player:get_player_name()] = hud_data
-
-    hud_data.txt = player:hud_add({
-        hud_elem_type = "text",
-        position = HUD_POSITION,
-        offset = { x = 0, y = 0 },
-        text = "",
-        alignment = HUD_ALIGNMENT,
-        scale = { x = 100, y = 100 },
-        number = 0xFF0000
-    })
-
-end)
+local hudid_by_playername = {}
 
 minetest.register_on_leaveplayer(function(player)
-    hud[player:get_player_name()] = nil
+    hudid_by_playername[player:get_player_name()] = nil
 end)
 
 local function get_info(player)
@@ -28,24 +17,37 @@ local function get_info(player)
     local blockpos = mesecons_debug.get_blockpos(pos)
     local ctx = mesecons_debug.get_context(pos)
 
-    local total = mesecons_debug.average_total_micros
+    local total = mesecons_debug.avg_total_micros_per_second
     if total == 0 then total = 1 end
-    local percent = math.floor(ctx.avg_micros * 100 / total )
+    local percent = ctx.avg_micros_per_second * 100 / total
 
-    local txt = "Mesecons @ (" .. blockpos.x .. "/" .. blockpos.y .. "/" .. blockpos.z .. ") "
+    local txt = ("mesecons @ %s\n"):format(
+        minetest.pos_to_string(blockpos)
+    )
 
     if ctx.whitelisted then
         txt = txt .. "whitelisted, no limits"
-        return txt, 0x00FF00
+        return txt, 0x00FFFF
     end
 
-    txt = txt ..
-            " usage: " .. math.floor(ctx.avg_micros) .. " us/s .. (" .. percent .. "%) " ..
-            "penalty: " .. math.floor(ctx.penalty * 10) / 10 .. " s"
+    txt = txt .. ("usage: %.0f us/s .. (%.1f%%) penalty: %.2fs; lag: %.2f"):format(
+        ctx.avg_micros_per_second,
+        percent,
+        ctx.penalty,
+        mesecons_debug.avg_lag
+    )
+    txt = txt .. ("\nlag = %s; load = %s"):format(
+        mesecons_debug.lag_level,
+        mesecons_debug.load_level
+    )
+    txt = txt .. ("\nenabled = %s; mesecons_enabled = %s"):format(
+        mesecons_debug.enabled,
+        mesecons_debug.mesecons_enabled
+    )
 
-    if ctx.penalty <= 0.1 then
+    if ctx.penalty <= 1 then
         return txt, 0x00FF00
-    elseif ctx.penalty < 0.5 then
+    elseif ctx.penalty <= 10 then
         return txt, 0xFFFF00
     else
         return txt, 0xFF0000
@@ -55,24 +57,39 @@ end
 local timer = 0
 minetest.register_globalstep(function(dtime)
     timer = timer + dtime
-    if timer < 1 then  -- TODO hud refresh interval should be a config option
+    if timer < hud_refresh_interval then
         return
     end
     timer = 0
 
     for _, player in ipairs(minetest.get_connected_players()) do
         local playername = player:get_player_name()
-        local hud_data = hud[playername]
-        local hud_enable = mesecons_debug.hud[playername]
+        local hudid = hudid_by_playername[playername]
+        local hud_enabled = mesecons_debug.hud_enabled_by_playername[playername]
 
-        if hud_enable then
-            local txt, color = get_info(player)
-            player:hud_change(hud_data.txt, "text", txt)
-            player:hud_change(hud_data.txt, "color", color)
+        if hud_enabled then
+            local text, color = get_info(player)
+            if hudid then
+                player:hud_change(hudid, "text", text)
+                player:hud_change(hudid, "number", color)
 
-        elseif hud_enable == false then
-            mesecons_debug.hud[playername] = nil
-            player:hud_change(hud_data.txt, "text", "")
+            else
+                hudid_by_playername[playername] = player:hud_add({
+                    hud_elem_type = "text",
+                    position = HUD_POSITION,
+                    offset = { x = 0, y = 0 },
+                    text = text,
+                    number = color,
+                    alignment = HUD_ALIGNMENT,
+                    scale = { x = 100, y = 100 },
+                })
+            end
+
+        else
+            if hudid then
+                player:hud_remove(hudid)
+                hudid_by_playername[playername] = nil
+            end
         end
     end
 end)

@@ -11,7 +11,7 @@ mesecons_debug.get_context = function(pos)
             -- usage in us
             micros = 0,
             -- "running average" micros per second
-            avg_micros = 0,
+            avg_micros_per_second = 0,
             -- time penalty
             penalty = 0,
             -- modification time

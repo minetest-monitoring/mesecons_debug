@@ -1,8 +1,9 @@
 minetest.register_chatcommand("mesecons_hud", {
     description = "mesecons_hud toggle",
     func = function(name)
-        mesecons_debug.hud[name] = not mesecons_debug.hud[name] or nil
-        if mesecons_debug.hud[name] then
+        local enabled = (not mesecons_debug.hud_enabled_by_playername[name]) or nil
+        mesecons_debug.hud_enabled_by_playername[name] = enabled
+        if enabled then
             return true, "mesecons hud enabled"
         else
             return true, "mesecons hud disabled"
@@ -16,7 +17,7 @@ minetest.register_chatcommand("mesecons_global_stats", {
         local top_ctx, top_hash
 
         for hash, ctx in pairs(mesecons_debug.context_store) do
-            if not top_ctx or top_ctx.avg_micros < ctx.avg_micros then
+            if not top_ctx or top_ctx.avg_micros_per_second < ctx.avg_micros_per_second then
                 -- store context with the most average time
                 top_ctx = ctx
                 top_hash = hash
@@ -31,7 +32,7 @@ minetest.register_chatcommand("mesecons_global_stats", {
             ):format(
                 minetest.pos_to_string(minetest.get_position_from_hash(top_hash)),
                 top_ctx.penalty,
-                top_ctx.avg_micros
+                top_ctx.avg_micros_per_second
             )
         else
             txt = "no context available"
@@ -51,7 +52,7 @@ minetest.register_chatcommand("mesecons_stats", {
 
         local ctx = mesecons_debug.get_context(player:get_pos())
         return true, ("Mapblock usage: %i us/s (across %i mapblocks)"):format(
-            ctx.avg_micros,
+            ctx.avg_micros_per_second,
             mesecons_debug.context_store_size
         )
     end

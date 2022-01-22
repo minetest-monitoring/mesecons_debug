@@ -1,30 +1,24 @@
 local function override_node_timer(node_name)
-    local def = minetest.registered_nodes[node_name]
-    local old_node_timer = def.on_timer
-    def.on_timer = function(pos)
-        local ctx = mesecons_debug.get_context(pos)
-        if ctx.whitelisted then return old_node_timer(pos) end
+    local old_node_timer = minetest.registered_nodes[node_name].on_timer
+    minetest.override_item(node_name, {
+        on_timer = function(pos, elapsed)
+            if not mesecons_debug.enabled then
+                return old_node_timer(pos, elapsed)
 
-        if ctx.penalty > 0 then
-            -- defer
-            local timer = minetest.get_node_timer(pos)
-            local meta = minetest.get_meta(pos)
-            local is_defered = meta:get_int("_defered") == 1
-
-            if is_defered then
-                -- already delayed
-                meta:set_int("_defered", 0)
-                return old_node_timer(pos)
-            else
-                -- start timer
-                meta:set_int("_defered", 1)
-                timer:start(ctx.penalty)
+            elseif not mesecons_debug.mesecons_enabled then
+                return true
             end
-        else
-            -- immediate
-            return old_node_timer(pos)
-        end
-    end
+
+            local ctx = mesecons_debug.get_context(pos)
+
+            if ctx.whitelisted or elapsed > ctx.penalty then
+                return old_node_timer(pos, elapsed)
+            else
+                -- defer
+                return true
+            end
+        end,
+    })
 end
 
 -- luaC
