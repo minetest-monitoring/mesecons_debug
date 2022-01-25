@@ -1,13 +1,13 @@
 
 local wait = mesecons_debug.wait
 
-mesecon.queue:add_function("create_lag", function(pos, duration)
+mesecon.queue:add_function("create_lag", function(_pos, duration)
     wait(duration)
 end)
 
 
 minetest.register_node("mesecons_debug:mesecons_lagger", {
-    description = "machine for adding artificial global lag",
+    description = "machine for adding artificial mesecons lag",
     group = {
         not_in_creative_inventory = 1,
         unbreakable = 1,
@@ -27,7 +27,7 @@ minetest.register_node("mesecons_debug:mesecons_lagger", {
         timer:start(0)
     end,
 
-    on_receive_fields = function(pos, formname, fields, sender)
+    on_receive_fields = function(pos, _formname, fields, sender)
         if not minetest.check_player_privs(sender, "mesecons_debug") then
             return
         end
@@ -44,7 +44,7 @@ minetest.register_node("mesecons_debug:mesecons_lagger", {
 
     end,
 
-    on_timer = function(pos, elapsed)
+    on_timer = function(pos, _elapsed)
         local meta = minetest.get_meta(pos)
         local lag = meta:get_float("lag")
         local chance = meta:get_float("chance")
