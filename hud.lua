@@ -30,17 +30,25 @@ local function get_info(player)
         return txt, 0x00FFFF
     end
 
-    txt = txt .. ("usage: %.0f us/s .. (%.1f%%) penalty: %.2fs; lag: %.2f"):format(
+    txt = txt .. ("usage: %.0f us/s .. (%.1f%%) penalty: %.2fs"):format(
         ctx.avg_micros_per_second,
         percent,
-        ctx.penalty,
-        mesecons_debug.avg_lag
+        ctx.penalty
     )
-    txt = txt .. ("\nlag = %s; load = %s"):format(
+    txt = txt .. ("\nlag: %.2f (%s); mesecons load = %s"):format(
+        mesecons_debug.avg_lag,
         mesecons_debug.lag_level,
         mesecons_debug.load_level
     )
-    txt = txt .. ("\nenabled = %s; mesecons_enabled = %s"):format(
+    if minetest.get_server_max_lag then
+        txt = txt .. ("; max_lag: %.2f"):format(
+            minetest.get_server_max_lag()
+        )
+    end
+    txt = txt .. ("; #players = %i"):format(
+        #minetest.get_connected_players()
+    )
+    txt = txt .. ("\npenalties enabled = %s; mesecons enabled = %s"):format(
         mesecons_debug.enabled,
         mesecons_debug.mesecons_enabled
     )
