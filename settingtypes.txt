@@ -1,0 +1,51 @@
+# in seconds
+mesecons_debug.hud_refresh_interval (hud refresh interval) int 1 1 60
+
+# max penalty in seconds
+mesecons_debug.max_penalty (maximum penalty) int 120 1 3600
+
+# everything above this threshold will disable the mesecons in that mapblock
+mesecons_debug.penalty_mapblock_disabled (threshold to disable mapblock) int 110 1 3600
+
+# time between /mesecons_clear_penalty commands, in seconds
+mesecons_debug.penalty_clear_cooldown (penalty clear command cooldown interval) int 120 1 3600
+
+# remove unused mapblock penalty data from memory after this many seconds
+mesecons_debug.gc_interval (garbage collection interval) float 61 1 3600
+
+# ratio between actual and expected duration of server steps, above which is considered laggy
+mesecons_debug.moderate_lag_ratio (low lag ratio) float 3 1 1000
+
+# ratio between actual and expected duration of server steps, above which is considered very laggy
+mesecons_debug.high_lag_ratio (high lag ratio) float 9 1 1000
+
+# percent of server step that is due solely to mesecons, above which is considered excessive
+mesecons_debug.high_load_threshold (high load threshold) float 0.33 0 1
+
+# number of server steps between penalty updates
+mesecons_debug.penalty_check_steps (steps between penalty updates) float 50 1 10000
+
+# scale of penalty during high load
+mesecons_debug.high_penalty_scale (high penalty scale) float 0.5 0.01 1
+
+# offset of penalty during high load
+mesecons_debug.high_penalty_offset (high penalty offset) float -0.5 -1 0
+
+# scale of penalty during medium load
+mesecons_debug.medium_penalty_scale (medium penalty scale) float 0.2 0.01 1
+
+# offset of penalty during medium load
+mesecons_debug.medium_penalty_offset (medium penalty offset) float -0.8 -1 0
+
+# scale of penalty during low load
+mesecons_debug.low_penalty_scale (low penalty scale) float 0.1 0.01 1
+
+# offset of penalty during low load
+mesecons_debug.low_penalty_offset (low penalty offset) float -1 -1 0
+
+# forces (1 / clamp) <= relative load <= clamp
+mesecons_debug.relative_load_clamp (clamp of relative load value) float 10 1 100
+
+# coefficient used in calculating an exponential moving average of values across penalty checks.
+# smaller values give more weight to history, larger values give more weight to the present.
+mesecons_debug.averaging_coefficient (averaging coefficient) float 0.2 0.01 1
