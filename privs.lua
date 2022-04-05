@@ -1,4 +1,3 @@
-
 minetest.register_privilege("mesecons_debug", {
-	description = "Allows execution of mesecon debug chatcommands"
+    description = "Allows execution of mesecon debug chatcommands"
 })

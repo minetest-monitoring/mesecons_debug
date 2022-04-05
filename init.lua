@@ -1,46 +1,63 @@
-local MP = minetest.get_modpath("mesecons_debug")
+local modname = minetest.get_current_modname()
+local modpath = minetest.get_modpath(modname)
 
 mesecons_debug = {
-	enabled = true,
-	-- blockpos-hash => context
-	context_store = {},
-	context_store_size = 0,
+    -- is mesecons_debug enabled?
+    enabled = true,
 
-	-- max penalty in seconds
-	max_penalty = 300,
+    -- is mescons enabled?
+    mesecons_enabled = true,
 
-	-- everything above this threshold will disable the mesecons in that mapblock
-	penalty_mapblock_disabled = 60,
+    -- blockpos-hash => context
+    context_store = {},
+    context_store_size = 0,
 
-	-- time between /mesecons_clear_penalty commands, in seconds
-	penalty_clear_cooldown = 120,
+    -- persistent storage for whitelist
+    storage = minetest.get_mod_storage(),
 
-	-- mapblock-hash -> true
-	whitelist = {},
+    -- total amount of time used by mesecons in the last period
+    total_micros = 0,
 
-	-- playername => true
-	hud = {},
+    -- running average of how much mesecons is doing
+    avg_total_micros_per_second = 0,
 
-	-- cpu usage in microseconds that triggers the penalty mechanism
-	max_usage_micros = tonumber(minetest.settings:get("mesecons_debug.max_usage_micros")) or 15000
+    -- average lag
+    avg_lag = 1,
+    lag_level = 'none',
+    load_level = 'none',
+
+    -- playername => true
+    hud_enabled_by_playername = {},
+
+    -- which optional dependencies are installed?
+    has = {
+        monitoring = minetest.get_modpath("monitoring"),
+        digilines = minetest.get_modpath("digilines"),
+    },
+
+    log = function(level, message_fmt, ...)
+        minetest.log(level, ("[%s] "):format(modname) .. message_fmt:format(...))
+    end
 }
 
-dofile(MP.."/functions.lua")
-dofile(MP.."/whitelist.lua")
-dofile(MP.."/privs.lua")
-dofile(MP.."/flush.lua")
-dofile(MP.."/context.lua")
-dofile(MP.."/penalty.lua")
-dofile(MP.."/clear_penalty.lua")
-dofile(MP.."/overrides.lua")
-dofile(MP.."/luacontroller.lua")
-dofile(MP.."/chatcommands.lua")
-dofile(MP.."/hud.lua")
+dofile(modpath .. "/settings.lua")
+dofile(modpath .. "/util.lua")
+dofile(modpath .. "/privs.lua")
+dofile(modpath .. "/context.lua")
+dofile(modpath .. "/penalty.lua")
+dofile(modpath .. "/cleanup.lua")
+dofile(modpath .. "/hud.lua")
+dofile(modpath .. "/overrides/mesecons_queue.lua")
+dofile(modpath .. "/overrides/node_timers.lua")
+dofile(modpath .. "/commands/user_commands.lua")
+dofile(modpath .. "/commands/admin_commands.lua")
+dofile(modpath .. "/commands/create_lag.lua")
+dofile(modpath .. "/commands/clear_penalty.lua")
+dofile(modpath .. "/commands/flush.lua")
 
-if minetest.get_modpath("digilines") then
-	dofile(MP.."/penalty_controller.lua")
+dofile(modpath .. "/nodes/mesecons_lagger.lua")
+if mesecons_debug.has.digilines then
+    dofile(modpath .. "/nodes/penalty_controller.lua")
 end
 
-mesecons_debug.load_whitelist()
-
-print("[OK] mesecons_debug loaded")
+dofile(modpath .. "/compat/convert_old_whitelist.lua")

@@ -1,4 +1,6 @@
 
+ignore = {"212/_.*"}
+
 globals = {
 	"mesecons_debug",
 	"mesecon",
