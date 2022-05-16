@@ -83,15 +83,6 @@ minetest.register_globalstep(function(dtime)
         mesecons_debug.avg_total_micros_per_second)
     mesecons_debug.avg_total_micros_per_second = avg_total_micros_per_second
 
-    if context_store_size == 0 or avg_total_micros_per_second == 0 then
-        -- nothing to do, but reset counters
-        elapsed = 0
-        elapsed_steps = 0
-        mesecons_debug.total_micros = 0
-        return
-    end
-
-
     -- how much lag is there?
     local lag = elapsed / (elapsed_steps * expected_dtime)
     local avg_lag = update_average(lag, mesecons_debug.avg_lag)
@@ -99,25 +90,33 @@ minetest.register_globalstep(function(dtime)
 
     local is_high_lag = avg_lag > high_lag_ratio
     local is_moderate_lag = avg_lag > moderate_lag_ratio
+    -- for use by HUD
+    if is_high_lag then
+        mesecons_debug.lag_level = "high"
+    elseif is_moderate_lag then
+        mesecons_debug.lag_level = "moderate"
+    else
+        mesecons_debug.lag_level = "low"
+    end
+
+    if context_store_size == 0 or avg_total_micros_per_second == 0 then
+        -- nothing to do, but reset counters
+        elapsed = 0
+        elapsed_steps = 0
+        mesecons_debug.total_micros = 0
+        mesecons_debug.load_level = "none"
+        return
+    end
 
     -- how much of the lag was mesecons?
     local mesecons_load = avg_total_micros_per_second / 1000000
     local is_high_load = mesecons_load > high_load_threshold
 
     -- for use by HUD
-    if is_high_lag then
-        mesecons_debug.lag_level = 'high'
-    elseif is_moderate_lag then
-        mesecons_debug.lag_level = 'moderate'
-    else
-        mesecons_debug.lag_level = 'low'
-    end
-
-    -- for use by HUD
     if is_high_load then
-        mesecons_debug.load_level = 'high'
+        mesecons_debug.load_level = "high"
     else
-        mesecons_debug.load_level = 'low'
+        mesecons_debug.load_level = "low"
     end
 
     local penalty_scale, penalty_offset
