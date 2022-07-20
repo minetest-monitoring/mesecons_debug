@@ -26,22 +26,22 @@ mesecons_debug.high_load_threshold (high load threshold) float 0.33 0 1
 mesecons_debug.penalty_check_steps (steps between penalty updates) float 50 1 10000
 
 # scale of penalty during high load
-mesecons_debug.high_penalty_scale (high penalty scale) float 0.5 0.01 1
+mesecons_debug.high_penalty_scale (high penalty scale) float 0.05 0.01 1
 
 # offset of penalty during high load
-mesecons_debug.high_penalty_offset (high penalty offset) float -0.5 -1 0
+mesecons_debug.high_penalty_offset (high penalty offset) float -0.05 -1 0
 
 # scale of penalty during medium load
-mesecons_debug.medium_penalty_scale (medium penalty scale) float 0.2 0.01 1
+mesecons_debug.medium_penalty_scale (medium penalty scale) float 0.05 0.01 1
 
 # offset of penalty during medium load
-mesecons_debug.medium_penalty_offset (medium penalty offset) float -0.8 -1 0
+mesecons_debug.medium_penalty_offset (medium penalty offset) float -0.2 -1 0
 
 # scale of penalty during low load
-mesecons_debug.low_penalty_scale (low penalty scale) float 0.1 0.01 1
+mesecons_debug.low_penalty_scale (low penalty scale) float 0.05 0.01 1
 
 # offset of penalty during low load
-mesecons_debug.low_penalty_offset (low penalty offset) float -1 -1 0
+mesecons_debug.low_penalty_offset (low penalty offset) float -0.5 -1 0
 
 # forces (1 / clamp) <= relative load <= clamp
 mesecons_debug.relative_load_clamp (clamp of relative load value) float 10 1 100
