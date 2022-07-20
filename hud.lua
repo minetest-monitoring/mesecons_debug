@@ -3,7 +3,7 @@ local hud_refresh_interval = mesecons_debug.settings.hud_refresh_interval
 mesecons_debug.settings._subscribe_for_modification("hud_refresh_interval",
         function(value) hud_refresh_interval = value end)
 
-local HUD_POSITION = { x = 0.1, y = 0.8 }
+local HUD_POSITION = { x = 0.2, y = 0.8 }
 local HUD_ALIGNMENT = { x = 1, y = 0 }
 
 local hudid_by_playername = {}
