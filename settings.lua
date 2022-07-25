@@ -27,22 +27,22 @@ mesecons_debug.settings = {
     high_load_threshold = tonumber(minetest.settings:get("mesecons_debug.high_load_threshold")) or 0.33,
 
     -- scale of penalty during high load
-    high_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.high_penalty_scale")) or 0.5,
+    high_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.high_penalty_scale")) or 0.05,
 
     -- offset of penalty during high load
-    high_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.high_penalty_offset")) or -0.5,
+    high_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.high_penalty_offset")) or -0.05,
 
     -- scale of penalty during medium load
-    medium_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_scale")) or 0.2,
+    medium_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_scale")) or 0.05,
 
     -- offset of penalty during medium load
-    medium_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_offset")) or -0.67,
+    medium_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.medium_penalty_offset")) or -0.1,
 
     -- scale of penalty during low load
-    low_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.low_penalty_scale")) or 0.1,
+    low_penalty_scale = tonumber(minetest.settings:get("mesecons_debug.low_penalty_scale")) or 0.05,
 
     -- offset of penalty during low load
-    low_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.low_penalty_offset")) or -1,
+    low_penalty_offset = tonumber(minetest.settings:get("mesecons_debug.low_penalty_offset")) or -0.5,
 
     -- forces (1 / clamp) <= relative load <= clamp
     relative_load_clamp = tonumber(minetest.settings:get("mesecons_debug.relative_load_clamp")) or 10,
