@@ -3,9 +3,6 @@ local hud_refresh_interval = mesecons_debug.settings.hud_refresh_interval
 mesecons_debug.settings._subscribe_for_modification("hud_refresh_interval",
         function(value) hud_refresh_interval = value end)
 
-local HUD_POSITION = { x = 0.2, y = 0.8 }
-local HUD_ALIGNMENT = { x = 1, y = 0 }
-
 local hudid_by_playername = {}
 
 minetest.register_on_leaveplayer(function(player)
@@ -55,8 +52,10 @@ local function get_info(player)
 
     if ctx.penalty <= 1 then
         return txt, 0x00FF00
+
     elseif ctx.penalty <= 10 then
         return txt, 0xFFFF00
+
     else
         return txt, 0xFF0000
     end
@@ -83,19 +82,22 @@ minetest.register_globalstep(function(dtime)
 
             else
                 hudid_by_playername[playername] = player:hud_add({
+                    name = "mesecons_debug:hud",
                     hud_elem_type = "text",
-                    position = HUD_POSITION,
+                    position = { x = 0.5, y = 0.8 },
+                    alignment = { x = 0, y = 0 },
                     offset = { x = 0, y = 0 },
+                    scale = { x = 100, y = 100 },
                     text = text,
                     number = color,
-                    alignment = HUD_ALIGNMENT,
-                    scale = { x = 100, y = 100 },
                 })
             end
-
         else
             if hudid then
-                player:hud_remove(hudid)
+                local hud_def = player:hud_get(hudid)
+                if hud_def.name == "mesecons_debug:hud" then
+                    player:hud_remove(hudid)
+                end
                 hudid_by_playername[playername] = nil
             end
         end
