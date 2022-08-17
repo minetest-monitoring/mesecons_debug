@@ -35,7 +35,7 @@ mesecons_debug.high_penalty_offset (high penalty offset) float -0.05 -1 0
 mesecons_debug.medium_penalty_scale (medium penalty scale) float 0.05 0.01 1
 
 # offset of penalty during medium load
-mesecons_debug.medium_penalty_offset (medium penalty offset) float -0.2 -1 0
+mesecons_debug.medium_penalty_offset (medium penalty offset) float -0.1 -1 0
 
 # scale of penalty during low load
 mesecons_debug.low_penalty_scale (low penalty scale) float 0.05 0.01 1
