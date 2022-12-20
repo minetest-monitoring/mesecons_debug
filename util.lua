@@ -1,3 +1,7 @@
+function mesecons_debug.check_pos(pos)
+    return type(pos) == "table" and type(pos.x) == "number" and type(pos.y) == "number" and type(pos.z) == "number"
+end
+
 function mesecons_debug.get_blockpos(pos)
     return {
         x = math.floor(pos.x / 16),
