@@ -2,42 +2,42 @@ local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
 
 mesecons_debug = {
-    -- is mesecons_debug enabled?
-    enabled = true,
+	-- is mesecons_debug enabled?
+	enabled = true,
 
-    -- is mescons enabled?
-    mesecons_enabled = true,
+	-- is mescons enabled?
+	mesecons_enabled = true,
 
-    -- blockpos-hash => context
-    context_store = {},
-    context_store_size = 0,
+	-- blockpos-hash => context
+	context_store = {},
+	context_store_size = 0,
 
-    -- persistent storage for whitelist
-    storage = minetest.get_mod_storage(),
+	-- persistent storage for whitelist
+	storage = minetest.get_mod_storage(),
 
-    -- total amount of time used by mesecons in the last period
-    total_micros = 0,
+	-- total amount of time used by mesecons in the last period
+	total_micros = 0,
 
-    -- running average of how much mesecons is doing
-    avg_total_micros_per_second = 0,
+	-- running average of how much mesecons is doing
+	avg_total_micros_per_second = 0,
 
-    -- average lag
-    avg_lag = 1,
-    lag_level = 'none',
-    load_level = 'none',
+	-- average lag
+	avg_lag = 1,
+	lag_level = "none",
+	load_level = "none",
 
-    -- playername => true
-    hud_enabled_by_playername = {},
+	-- playername => true
+	hud_enabled_by_playername = {},
 
-    -- which optional dependencies are installed?
-    has = {
-        monitoring = minetest.get_modpath("monitoring"),
-        digilines = minetest.get_modpath("digilines"),
-    },
+	-- which optional dependencies are installed?
+	has = {
+		monitoring = minetest.get_modpath("monitoring"),
+		digilines = minetest.get_modpath("digilines"),
+	},
 
-    log = function(level, message_fmt, ...)
-        minetest.log(level, ("[%s] "):format(modname) .. message_fmt:format(...))
-    end
+	log = function(level, message_fmt, ...)
+		minetest.log(level, ("[%s] "):format(modname) .. message_fmt:format(...))
+	end,
 }
 
 dofile(modpath .. "/settings.lua")
@@ -57,7 +57,7 @@ dofile(modpath .. "/commands/flush.lua")
 
 dofile(modpath .. "/nodes/mesecons_lagger.lua")
 if mesecons_debug.has.digilines then
-    dofile(modpath .. "/nodes/penalty_controller.lua")
+	dofile(modpath .. "/nodes/penalty_controller.lua")
 end
 
 dofile(modpath .. "/compat/convert_old_whitelist.lua")
