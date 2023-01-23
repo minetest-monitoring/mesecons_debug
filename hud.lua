@@ -69,8 +69,18 @@ minetest.register_globalstep(function(dtime)
 		if hud_enabled then
 			local text, color = get_info(player)
 			if hudid then
-				player:hud_change(hudid, "text", text)
-				player:hud_change(hudid, "number", color)
+				local hud_def = player:hud_get(hudid)
+				if hud_def and hud_def.name == "mesecons_debug:hud" then
+					player:hud_change(hudid, "text", text)
+					player:hud_change(hudid, "number", color)
+				else
+					minetest.chat_send_player(
+						playername,
+						"[mesecons_debug] another mod removed your hud, you must re-enable it or possibly relog"
+					)
+					hudid_by_playername[playername] = nil
+					mesecons_debug.hud_enabled_by_playername[playername] = nil
+				end
 			else
 				hudid_by_playername[playername] = player:hud_add({
 					name = "mesecons_debug:hud",
