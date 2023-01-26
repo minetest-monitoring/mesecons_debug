@@ -17,7 +17,7 @@ mesecons_debug.get_context = function(pos)
             -- modification time
             mtime = minetest.get_us_time(),
             -- whitelist status
-            whitelisted = storage:contains(hash)
+            whitelisted = storage:contains(hash),
         }
         mesecons_debug.context_store[hash] = ctx
         mesecons_debug.context_store_size = mesecons_debug.context_store_size + 1

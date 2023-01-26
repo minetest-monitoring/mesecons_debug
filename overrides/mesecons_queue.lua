@@ -1,13 +1,20 @@
 local penalty_mapblock_disabled = mesecons_debug.settings.penalty_mapblock_disabled
-mesecons_debug.settings._subscribe_for_modification("penalty_mapblock_disabled",
-        function(value) penalty_mapblock_disabled = value end)
+mesecons_debug.settings._subscribe_for_modification("penalty_mapblock_disabled", function(value)
+    penalty_mapblock_disabled = value
+end)
 
--- execute()
+local check_pos = mesecons_debug.check_pos
+
 local old_execute = mesecon.queue.execute
 mesecon.queue.execute = function(self, action)
     if not mesecons_debug.enabled then
         return old_execute(self, action)
     elseif not mesecons_debug.mesecons_enabled then
+        return
+    end
+
+    if not check_pos(action.pos) then
+        mesecons_debug.log("error", "mesecons action has an invalid position and cannot be processed %s", dump(action))
         return
     end
 
@@ -22,18 +29,16 @@ mesecon.queue.execute = function(self, action)
 
     mesecons_debug.total_micros = mesecons_debug.total_micros + micros
     ctx.micros = ctx.micros + micros
-    ctx.mtime = t0  -- modification time
+    ctx.mtime = t0 -- modification time
 
     return rv
 end
-
 
 -- add_action()
 local old_add_action = mesecon.queue.add_action
 mesecon.queue.add_action = function(self, pos, func, params, time, overwritecheck, priority)
     if not mesecons_debug.enabled then
         return old_add_action(self, pos, func, params, time, overwritecheck, priority)
-
     elseif not mesecons_debug.mesecons_enabled then
         return
     end

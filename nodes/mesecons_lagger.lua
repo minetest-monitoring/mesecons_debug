@@ -1,10 +1,8 @@
-
 local wait = mesecons_debug.wait
 
 mesecon.queue:add_function("create_lag", function(_pos, duration)
     wait(duration)
 end)
-
 
 minetest.register_node("mesecons_debug:mesecons_lagger", {
     description = "machine for adding artificial mesecons lag",
@@ -12,7 +10,7 @@ minetest.register_node("mesecons_debug:mesecons_lagger", {
         not_in_creative_inventory = 1,
         unbreakable = 1,
     },
-    tiles = {"default_mese_block.png^[colorize:#F00:128"},
+    tiles = { "default_mese_block.png^[colorize:#F00:128" },
     on_blast = function() end,
     drop = "",
 
@@ -20,8 +18,7 @@ minetest.register_node("mesecons_debug:mesecons_lagger", {
         local meta = minetest.get_meta(pos)
         meta:set_float("lag", 0.0)
         meta:set_float("chance", 0.0)
-        meta:set_string("formspec",
-                ("field[lag;Lag (in us);%s]field[chance;Chance;%s]"):format(0.0, 0.0))
+        meta:set_string("formspec", ("field[lag;Lag (in us);%s]field[chance;Chance;%s]"):format(0.0, 0.0))
 
         local timer = minetest.get_node_timer(pos)
         timer:start(0)
@@ -38,10 +35,10 @@ minetest.register_node("mesecons_debug:mesecons_lagger", {
         if fields.chance then
             meta:set_float("chance", fields.chance)
         end
-        meta:set_string("formspec",
-                ("field[lag;Lag (in us);%s]field[chance;Chance;%s]"):format(
-                        meta:get_float("lag"), meta:get_float("chance")))
-
+        meta:set_string(
+            "formspec",
+            ("field[lag;Lag (in us);%s]field[chance;Chance;%s]"):format(meta:get_float("lag"), meta:get_float("chance"))
+        )
     end,
 
     on_timer = function(pos, _elapsed)

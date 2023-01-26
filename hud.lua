@@ -1,10 +1,7 @@
-
 local hud_refresh_interval = mesecons_debug.settings.hud_refresh_interval
-mesecons_debug.settings._subscribe_for_modification("hud_refresh_interval",
-        function(value) hud_refresh_interval = value end)
-
-local HUD_POSITION = { x = 0.1, y = 0.8 }
-local HUD_ALIGNMENT = { x = 1, y = 0 }
+mesecons_debug.settings._subscribe_for_modification("hud_refresh_interval", function(value)
+    hud_refresh_interval = value
+end)
 
 local hudid_by_playername = {}
 
@@ -18,40 +15,34 @@ local function get_info(player)
     local ctx = mesecons_debug.get_context(pos)
 
     local total = mesecons_debug.avg_total_micros_per_second
-    if total == 0 then total = 1 end
+    if total == 0 then
+        total = 1
+    end
     local percent = ctx.avg_micros_per_second * 100 / total
 
-    local txt = ("mesecons @ %s\n"):format(
-        minetest.pos_to_string(blockpos)
-    )
+    local txt = ("mesecons @ %s\n"):format(minetest.pos_to_string(blockpos))
 
     if ctx.whitelisted then
         txt = txt .. "whitelisted, no limits"
         return txt, 0x00FFFF
     end
 
-    txt = txt .. ("usage: %.0f us/s .. (%.1f%%) penalty: %.2fs"):format(
-        ctx.avg_micros_per_second,
-        percent,
-        ctx.penalty
-    )
-    txt = txt .. ("\nlag: %.2f (%s); mesecons load = %s"):format(
-        mesecons_debug.avg_lag,
-        mesecons_debug.lag_level,
-        mesecons_debug.load_level
-    )
-    if minetest.get_server_max_lag then
-        txt = txt .. ("; max_lag: %.2f"):format(
-            minetest.get_server_max_lag()
+    txt = txt .. ("usage: %.0f us/s .. (%.1f%%) penalty: %.2fs"):format(ctx.avg_micros_per_second, percent, ctx.penalty)
+    txt = txt
+        .. ("\nlag: %.2f (%s); mesecons load = %s"):format(
+            mesecons_debug.avg_lag,
+            mesecons_debug.lag_level,
+            mesecons_debug.load_level
         )
+    if minetest.get_server_max_lag then
+        txt = txt .. ("; max_lag: %.2f"):format(minetest.get_server_max_lag())
     end
-    txt = txt .. ("; #players = %i"):format(
-        #minetest.get_connected_players()
-    )
-    txt = txt .. ("\npenalties enabled = %s; mesecons enabled = %s"):format(
-        mesecons_debug.enabled,
-        mesecons_debug.mesecons_enabled
-    )
+    txt = txt .. ("; #players = %i"):format(#minetest.get_connected_players())
+    txt = txt
+        .. ("\npenalties enabled = %s; mesecons enabled = %s"):format(
+            mesecons_debug.enabled,
+            mesecons_debug.mesecons_enabled
+        )
 
     if ctx.penalty <= 1 then
         return txt, 0x00FF00
@@ -78,24 +69,36 @@ minetest.register_globalstep(function(dtime)
         if hud_enabled then
             local text, color = get_info(player)
             if hudid then
-                player:hud_change(hudid, "text", text)
-                player:hud_change(hudid, "number", color)
-
+                local hud_def = player:hud_get(hudid)
+                if hud_def and hud_def.name == "mesecons_debug:hud" then
+                    player:hud_change(hudid, "text", text)
+                    player:hud_change(hudid, "number", color)
+                else
+                    minetest.chat_send_player(
+                        playername,
+                        "[mesecons_debug] another mod removed your hud, you must re-enable it or possibly relog"
+                    )
+                    hudid_by_playername[playername] = nil
+                    mesecons_debug.hud_enabled_by_playername[playername] = nil
+                end
             else
                 hudid_by_playername[playername] = player:hud_add({
+                    name = "mesecons_debug:hud",
                     hud_elem_type = "text",
-                    position = HUD_POSITION,
+                    position = { x = 0.5, y = 0.8 },
+                    alignment = { x = 0, y = 0 },
                     offset = { x = 0, y = 0 },
+                    scale = { x = 100, y = 100 },
                     text = text,
                     number = color,
-                    alignment = HUD_ALIGNMENT,
-                    scale = { x = 100, y = 100 },
                 })
             end
-
         else
             if hudid then
-                player:hud_remove(hudid)
+                local hud_def = player:hud_get(hudid)
+                if hud_def.name == "mesecons_debug:hud" then
+                    player:hud_remove(hudid)
+                end
                 hudid_by_playername[playername] = nil
             end
         end

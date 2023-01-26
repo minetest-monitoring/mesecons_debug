@@ -1,3 +1,5 @@
+local f = string.format
+
 minetest.register_chatcommand("mesecons_hud", {
     description = "mesecons_hud toggle",
     func = function(name)
@@ -8,7 +10,7 @@ minetest.register_chatcommand("mesecons_hud", {
         else
             return true, "mesecons hud disabled"
         end
-    end
+    end,
 })
 
 minetest.register_chatcommand("mesecons_global_stats", {
@@ -26,10 +28,8 @@ minetest.register_chatcommand("mesecons_global_stats", {
 
         local txt
         if top_ctx then
-            txt = (
-                "Most prominent mesecons usage at mapblock %s" ..
-                " with %f seconds penalty and %i us average use"
-            ):format(
+            txt = f(
+                "Most prominent mesecons usage at mapblock %s" .. " with %f seconds penalty and %i us average use",
                 minetest.pos_to_string(minetest.get_position_from_hash(top_hash)),
                 top_ctx.penalty,
                 top_ctx.avg_micros_per_second
@@ -39,7 +39,7 @@ minetest.register_chatcommand("mesecons_global_stats", {
         end
 
         return true, txt
-    end
+    end,
 })
 
 minetest.register_chatcommand("mesecons_stats", {
@@ -51,10 +51,11 @@ minetest.register_chatcommand("mesecons_stats", {
         end
 
         local ctx = mesecons_debug.get_context(player:get_pos())
-        return true, ("Mapblock usage: %i us/s (across %i mapblocks)"):format(
-            ctx.avg_micros_per_second,
-            mesecons_debug.context_store_size
-        )
-    end
+        return true,
+            f(
+                "Mapblock usage: %i us/s (across %i mapblocks)",
+                ctx.avg_micros_per_second,
+                mesecons_debug.context_store_size
+            )
+    end,
 })
-

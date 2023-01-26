@@ -23,8 +23,8 @@ mesecons_debug = {
 
     -- average lag
     avg_lag = 1,
-    lag_level = 'none',
-    load_level = 'none',
+    lag_level = "none",
+    load_level = "none",
 
     -- playername => true
     hud_enabled_by_playername = {},
@@ -37,7 +37,7 @@ mesecons_debug = {
 
     log = function(level, message_fmt, ...)
         minetest.log(level, ("[%s] "):format(modname) .. message_fmt:format(...))
-    end
+    end,
 }
 
 dofile(modpath .. "/settings.lua")

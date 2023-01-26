@@ -16,7 +16,7 @@ minetest.register_node("mesecons_debug:penalty_controller", {
         "jeija_microcontroller_sides.png",
         "jeija_microcontroller_sides.png",
         "jeija_microcontroller_sides.png",
-        "jeija_microcontroller_sides.png"
+        "jeija_microcontroller_sides.png",
     },
 
     inventory_image = "penalty_controller_top.png",
@@ -33,7 +33,7 @@ minetest.register_node("mesecons_debug:penalty_controller", {
             { -8 / 16, -8 / 16, -8 / 16, 8 / 16, -7 / 16, 8 / 16 }, -- Bottom slab
             { -5 / 16, -7 / 16, -5 / 16, 5 / 16, -6 / 16, 5 / 16 }, -- Circuit board
             { -3 / 16, -6 / 16, -3 / 16, 3 / 16, -5 / 16, 3 / 16 }, -- IC
-        }
+        },
     },
 
     paramtype = "light",
@@ -66,10 +66,10 @@ minetest.register_node("mesecons_debug:penalty_controller", {
                         micros = ctx.micros,
                         avg_micros = ctx.avg_micros_per_second,
                         penalty = ctx.penalty,
-                        whitelisted = ctx.whitelisted
+                        whitelisted = ctx.whitelisted,
                     })
                 end
-            end
-        }
-    }
+            end,
+        },
+    },
 })

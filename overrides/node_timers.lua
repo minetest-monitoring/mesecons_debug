@@ -4,7 +4,6 @@ local function override_node_timer(node_name)
         on_timer = function(pos, elapsed)
             if not mesecons_debug.enabled then
                 return old_node_timer(pos, elapsed)
-
             elseif not mesecons_debug.mesecons_enabled then
                 return true
             end

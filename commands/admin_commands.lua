@@ -6,7 +6,7 @@ minetest.register_chatcommand("mesecons_enable", {
         mesecon.queue.actions = {}
         mesecons_debug.mesecons_enabled = true
         return true, "mesecons enabled"
-    end
+    end,
 })
 
 minetest.register_chatcommand("mesecons_disable", {
@@ -15,7 +15,7 @@ minetest.register_chatcommand("mesecons_disable", {
     func = function()
         mesecons_debug.mesecons_enabled = false
         return true, "mesecons disabled"
-    end
+    end,
 })
 
 minetest.register_chatcommand("mesecons_whitelist_get", {
@@ -29,15 +29,9 @@ minetest.register_chatcommand("mesecons_whitelist_get", {
             count = count + 1
         end
 
-        return true, (
-            "mesecons whitelist:\n" ..
-            "%s\n" ..
-            "%i mapblocks whitelisted"
-        ):format(
-            table.concat(list, "\n"),
-            count
-        )
-    end
+        return true,
+            ("mesecons whitelist:\n" .. "%s\n" .. "%i mapblocks whitelisted"):format(table.concat(list, "\n"), count)
+    end,
 })
 
 minetest.register_chatcommand("mesecons_whitelist_add", {
@@ -55,7 +49,7 @@ minetest.register_chatcommand("mesecons_whitelist_add", {
         mesecons_debug.storage:set_string(hash, "1")
 
         return true, "mapblock whitlisted"
-    end
+    end,
 })
 
 minetest.register_chatcommand("mesecons_whitelist_remove", {
@@ -73,7 +67,7 @@ minetest.register_chatcommand("mesecons_whitelist_remove", {
         mesecons_debug.storage:set_string(hash, "")
 
         return true, "mapblock removed from whitelist"
-    end
+    end,
 })
 
 minetest.register_chatcommand("mesecons_debug_set", {
@@ -86,7 +80,7 @@ minetest.register_chatcommand("mesecons_debug_set", {
             return false
         end
 
-        local setting, value = params:match('^([a-zA-Z0-9_-]+)%s+(.*)$')
+        local setting, value = params:match("^([a-zA-Z0-9_-]+)%s+(.*)$")
         value = tonumber(value)
         if not setting or not value then
             return false
@@ -99,7 +93,7 @@ minetest.register_chatcommand("mesecons_debug_set", {
         mesecons_debug.settings.modify_setting(setting, value)
 
         return true, "setting updated"
-    end
+    end,
 })
 
 minetest.register_chatcommand("mesecons_debug_get", {
@@ -118,5 +112,5 @@ minetest.register_chatcommand("mesecons_debug_get", {
         else
             return false, "unknown setting"
         end
-    end
+    end,
 })

@@ -3,10 +3,8 @@ local penalty_clear_cooldown = mesecons_debug.settings.penalty_clear_cooldown
 -- playername => time-of-last-cooldown
 local cooldown_expiry_by_name = {}
 
-
 minetest.register_chatcommand("mesecons_clear_penalty", {
-    description = "clears the penalty in the current mapblock " ..
-            "(cooldown: " .. penalty_clear_cooldown .. ")",
+    description = "clears the penalty in the current mapblock " .. "(cooldown: " .. penalty_clear_cooldown .. ")",
     func = function(name)
         local player = minetest.get_player_by_name(name)
         if not player then
@@ -29,5 +27,5 @@ minetest.register_chatcommand("mesecons_clear_penalty", {
         ctx.penalty = 0
 
         return true, "penalty reset"
-    end
+    end,
 })

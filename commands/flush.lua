@@ -4,5 +4,5 @@ minetest.register_chatcommand("mesecons_flush", {
     func = function(name)
         minetest.log("warning", "Player " .. name .. " flushes mesecon actionqueue")
         mesecon.queue.actions = {}
-    end
+    end,
 })
