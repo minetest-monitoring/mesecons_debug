@@ -119,7 +119,7 @@ end
 # License
 
 * CODE:
-  * ???????????
+  * `MIT`
 
 * textures/penalty_controller_top.png
-  * CC BY-SA 3.0 https://cheapiesystems.com/git/digistuff
+  * `CC BY-SA 3.0` https://cheapiesystems.com/git/digistuff
