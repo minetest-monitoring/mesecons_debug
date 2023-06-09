@@ -43,8 +43,9 @@ minetest.register_chatcommand("mesecons_whitelist_add", {
             return
         end
 
-        local hash = mesecons_debug.hashpos(player:get_pos())
-        local ctx = mesecons_debug.get_context(hash)
+        local pos = player:get_pos()
+        local hash = mesecons_debug.hashpos(pos)
+        local ctx = mesecons_debug.get_context(pos)
         ctx.whitelisted = true
         mesecons_debug.storage:set_string(hash, "1")
 
@@ -61,8 +62,9 @@ minetest.register_chatcommand("mesecons_whitelist_remove", {
             return
         end
 
-        local hash = mesecons_debug.hashpos(player:get_pos())
-        local ctx = mesecons_debug.get_context(hash)
+        local pos = player:get_pos()
+        local hash = mesecons_debug.hashpos(pos)
+        local ctx = mesecons_debug.get_context(pos)
         ctx.whitelisted = false
         mesecons_debug.storage:set_string(hash, "")
 
