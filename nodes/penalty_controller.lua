@@ -4,6 +4,7 @@ minetest.register_node("mesecons_debug:penalty_controller", {
         cracky = 3,
         not_in_creative_inventory = 1,
     },
+    is_ground_content = false,
 
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)
