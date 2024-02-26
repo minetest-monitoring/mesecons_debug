@@ -10,6 +10,7 @@ minetest.register_node("mesecons_debug:mesecons_lagger", {
         not_in_creative_inventory = 1,
         unbreakable = 1,
     },
+    is_ground_content = false,
     tiles = { "default_mese_block.png^[colorize:#F00:128" },
     on_blast = function() end,
     drop = "",
